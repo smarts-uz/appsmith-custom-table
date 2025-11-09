@@ -1,8 +1,30 @@
+import React from "react";
 
-function App() {
+interface AppProps {
+  model?: any;
+  updateModel?: any;
+  triggerEvent?: any;
+}
+
+function App({ updateModel = () => null }: AppProps) {
+  // const {
+  //   pagination: paginationProps = {},
+  //   schema = {},
+  //   rowActions = [],
+  //   rowSelectionAction = "",
+  //   actionColumn = {},
+  //   rowIndexColumn = {},
+  //   fetcher: { url, headers, body, accessor },
+  // } = model;
+  // const { enable, pageSize = 20 } = paginationProps;
+
+  React.useEffect(() => {
+    updateModel({ data: [{ id: "hello", data: "smurfs" }] });
+  }, []);
+
   return (
     <>
-      <div className="font-bold bg-red-400">Blah</div>
+      <div className="font-bold  bg-red-400">Blah</div>
     </>
   );
 }
