@@ -22,7 +22,7 @@ export default defineConfig({
     lib: {
       entry: path.resolve(__dirname, "src/main.tsx"), // now main.tsx
       name: "MyAppsmithComponent",
-      fileName: (format) => `my-appsmith-component.${format}.js`,
+      fileName: (format) => `app.${format}.js`,
       formats: ["es", "umd"],
     },
     rollupOptions: {
