@@ -23,16 +23,7 @@ export default defineConfig({
       entry: path.resolve(__dirname, "src/main.tsx"), // now main.tsx
       name: "MyAppsmithComponent",
       fileName: (format) => `app.${format}.js`,
-      formats: ["es", "umd"],
-    },
-    rollupOptions: {
-      external: ["react", "react-dom"],
-      output: {
-        globals: {
-          react: "React",
-          "react-dom": "ReactDOM",
-        },
-      },
+      formats: ["es"],
     },
   },
 });
