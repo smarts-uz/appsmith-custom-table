@@ -8,6 +8,9 @@ export default defineConfig({
     tailwindcss(),
     react({
       babel: {
+        presets: [
+          ["@babel/preset-react", { runtime: "classic" }]
+        ]
         // plugins: [["babel-plugin-react-compiler"]], // optional
       },
     }),
@@ -21,7 +24,7 @@ export default defineConfig({
 
   build: {
     lib: {
-      entry: resolve(__dirname, "src/main.tsx"),
+      entry: resolve(__dirname, "src/index.tsx"),
       name: "AppsmithCustomTable",
       fileName: (format) => `app.${format}.js`,
       formats: ["es", "umd"],
@@ -29,11 +32,7 @@ export default defineConfig({
 
     rollupOptions: {
       // 👇 1. Don’t bundle these — they’ll be provided by the consuming app
-      external: [
-        "react",
-        "react-dom",
-        "react/jsx-runtime",
-      ],
+      external: ["react", "react-dom", "react/jsx-runtime"],
 
       // 👇 2. Map globals for UMD build (for <script> CDN usage)
       output: {
