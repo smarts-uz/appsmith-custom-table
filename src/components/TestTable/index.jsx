@@ -1,7 +1,4 @@
-import React from "https://cdn.skypack.dev/react@18.2.0";
-import ReactDOM from "https://cdn.skypack.dev/react-dom@18.2.0";
-import useSWRInfinite from "https://cdn.skypack.dev/swr/infinite";
-import { SWRConfig } from "https://cdn.skypack.dev/swr";
+import React from "react";
 import {
   useReactTable,
   getCoreRowModel,
@@ -124,291 +121,6 @@ const SortingIcon = ({ sorting }) => {
   }
 };
 
-const TableFilters = ({ column, t }) => {
-  const { filterVariant, headerText: metaHeaderText } =
-    column.columnDef.meta ?? {};
-  const columnFilterValue = column.getFilterValue();
-  const header = column.columnDef.header;
-  const headerText =
-    metaHeaderText || (typeof header === "string" ? header : column.id);
-
-  if (!filterVariant) return null;
-
-  // Generate a unique ID for linking label and input
-  const filterId = `filter-${column.id}`;
-
-  const renderFilter = () => {
-    switch (filterVariant) {
-      case "text":
-        return (
-          <TableFilterText
-            column={column}
-            columnFilterValue={columnFilterValue}
-            filterId={filterId}
-            headerText={headerText}
-            t={t}
-          />
-        );
-      case "number":
-        return (
-          <TableFilterNumber
-            column={column}
-            columnFilterValue={columnFilterValue}
-            filterId={filterId}
-            headerText={headerText}
-            t={t}
-          />
-        );
-      case "enum":
-        return (
-          <TableFilterEnum
-            column={column}
-            columnFilterValue={columnFilterValue}
-            filterId={filterId}
-            headerText={headerText}
-            t={t}
-          />
-        );
-      case "bool":
-        return (
-          <TableFilterBoolean
-            column={column}
-            columnFilterValue={columnFilterValue}
-            filterId={filterId}
-            headerText={headerText}
-            t={t}
-          />
-        );
-      case "id":
-        return (
-          <TableFilterText
-            column={column}
-            columnFilterValue={columnFilterValue}
-            filterId={filterId}
-            headerText={headerText}
-            t={t}
-          />
-        );
-      case "date":
-        return (
-          <TableFilterDate
-            column={column}
-            columnFilterValue={columnFilterValue}
-            filterId={filterId}
-            headerText={headerText}
-            t={t}
-          />
-        );
-      case "currency":
-        return (
-          <TableFilterNumber
-            column={column}
-            columnFilterValue={columnFilterValue}
-            filterId={filterId}
-            headerText={headerText}
-            t={t}
-          />
-        );
-      default:
-        return null;
-    }
-  };
-
-  return <div className="form-control">{renderFilter()}</div>;
-};
-
-const TableFilterDate = ({
-  column,
-  columnFilterValue,
-  filterId,
-  headerText,
-  t,
-}) => {
-  const fromId = `${filterId}-from`;
-  const toId = `${filterId}-to`;
-  const fromValue =
-    typeof columnFilterValue === "object" && columnFilterValue !== null
-      ? columnFilterValue.from
-      : "";
-  const toValue =
-    typeof columnFilterValue === "object" && columnFilterValue !== null
-      ? columnFilterValue.to
-      : "";
-
-  return (
-    <div className="flex items-center gap-2">
-      <input
-        id={fromId}
-        type="date"
-        value={fromValue ?? ""}
-        onChange={(e) =>
-          column.setFilterValue((old) => {
-            const newFrom = e.target.value || undefined;
-            if (typeof old === "object" && old !== null) {
-              return { ...old, from: newFrom };
-            }
-            return { from: newFrom };
-          })
-        }
-        aria-label={t("dateFromAriaLabel", { headerText })}
-        className="input input-bordered w-full max-w-xs"
-      />
-      <span>-</span>
-      <input
-        id={toId}
-        type="date"
-        value={toValue ?? ""}
-        onChange={(e) =>
-          column.setFilterValue((old) => {
-            const newTo = e.target.value || undefined;
-            if (typeof old === "object" && old !== null) {
-              return { ...old, to: newTo };
-            }
-            return { to: newTo };
-          })
-        }
-        aria-label={t("dateToAriaLabel", { headerText })}
-        className="input input-bordered w-full max-w-xs"
-      />
-    </div>
-  );
-};
-
-const TableFilterBoolean = ({
-  column,
-  columnFilterValue,
-  filterId,
-  headerText,
-  t,
-}) => {
-  return (
-    <select
-      id={filterId}
-      value={columnFilterValue ?? ""}
-      onChange={(e) => column.setFilterValue(e.target.value)}
-      placeholder={t("filterPlaceholder", { headerText })}
-      aria-label={t("filterAriaLabel", { headerText })}
-      className="select select-bordered w-full max-w-xs"
-    >
-      <option value="">{t("all")}</option>
-      <option value={true}>{t("true")}</option>
-      <option value={false}>{t("false")}</option>
-    </select>
-  );
-};
-
-const TableFilterText = ({
-  column,
-  columnFilterValue,
-  filterId,
-  headerText,
-  t,
-}) => {
-  return (
-    <input
-      id={filterId}
-      type="text"
-      value={columnFilterValue ?? ""}
-      onChange={(e) => column.setFilterValue(e.target.value)}
-      placeholder={t("filterPlaceholder", { headerText })}
-      aria-label={t("filterAriaLabel", { headerText })}
-      className="input input-bordered w-full max-w-xs"
-    />
-  );
-};
-
-const TableFilterEnum = ({
-  column,
-  columnFilterValue,
-  filterId,
-  headerText,
-  t,
-}) => {
-  const options = column.columnDef.meta?.options || [];
-  const currentValue =
-    typeof columnFilterValue === "object" && columnFilterValue !== null
-      ? columnFilterValue.eq
-      : columnFilterValue;
-
-  return (
-    <select
-      id={filterId}
-      value={currentValue ?? ""}
-      onChange={(e) => {
-        const val = e.target.value;
-        column.setFilterValue(val || undefined);
-      }}
-      aria-label={t("filterAriaLabel", { headerText })}
-      className="select select-bordered w-full max-w-xs"
-    >
-      <option value="">{t("all")}</option>
-      {options.map((option) => (
-        <option key={option?.value} value={option?.value}>
-          {option?.title}
-        </option>
-      ))}
-    </select>
-  );
-};
-
-const TableFilterNumber = ({
-  column,
-  columnFilterValue,
-  filterId,
-  headerText,
-  t,
-}) => {
-  const minId = `${filterId}-min`;
-  const maxId = `${filterId}-max`;
-  const { minOptions = [], maxOptions = [] } = column.columnDef.meta ?? {};
-
-  return (
-    <div className="flex items-center gap-2">
-      <select
-        id={minId}
-        placeholder={t("min")}
-        onChange={(e) =>
-          column.setFilterValue((old = {}) => ({
-            ...old,
-            min: e.target.value ? Number(e.target.value) : undefined,
-          }))
-        }
-        value={columnFilterValue?.min ?? ""}
-        aria-label={t("numberMinAriaLabel", { headerText })}
-        className="select select-bordered w-full max-w-xs"
-      >
-        <option value="">{t("all")}</option>
-        {minOptions.map((item, index) => (
-          <option key={index} value={item}>
-            {item}
-          </option>
-        ))}
-      </select>
-      <span>-</span>
-      <select
-        id={maxId}
-        placeholder={t("max")}
-        onChange={(e) =>
-          column.setFilterValue((old = {}) => ({
-            ...old,
-            max: e.target.value ? Number(e.target.value) : undefined,
-          }))
-        }
-        value={columnFilterValue?.max ?? ""}
-        aria-label={t("numberMaxAriaLabel", { headerText })}
-        className="select select-bordered w-full max-w-xs"
-      >
-        <option value="">{t("all")}</option>
-        {maxOptions.map((item, index) => (
-          <option key={index} value={item}>
-            {item}
-          </option>
-        ))}
-      </select>
-    </div>
-  );
-};
-
 const Pagination = ({ table, t }) => (
   <div className="flex items-center justify-center flex-wrap gap-4 py-2 px-4 bg-base-100 rounded-b-lg border-t border-base-300 w-full">
     <div className="join rounded-md overflow-hidden">
@@ -452,7 +164,7 @@ const Pagination = ({ table, t }) => (
   </div>
 );
 
-export function Table({ model, updateModel, triggerEvent }) {
+function TestTable({ model, updateModel, triggerEvent }) {
   const stableEmptyObject = React.useMemo(() => ({}), []);
   const stableEmptyArray = React.useMemo(() => [], []);
 
@@ -691,95 +403,9 @@ export function Table({ model, updateModel, triggerEvent }) {
     fetchData();
   }, [url, enablePagination, dataKey, method, headers, bodyData, isErrored]);
 
-  const getKey = (pageIndex, previousPageData) => {
-    if (enablePagination || !url) return null;
-    if (previousPageData && !previousPageData.length) return null;
-
-    const offset = pageIndex * pageSize;
-    const urlWithParams = new URL(url);
-    urlWithParams.searchParams.set("offset", offset);
-    urlWithParams.searchParams.set("limit", pageSize);
-
-    // Apply filters for server-side filtering when infinite scroll is enabled
-    columnFilters.forEach((filter) => {
-      const { id, value } = filter;
-      if (value !== undefined && value !== null && value !== "") {
-        if (
-          typeof value === "object" &&
-          value !== null &&
-          !Array.isArray(value)
-        ) {
-          // For range filters (date, number)
-          Object.entries(value).forEach(([key, val]) => {
-            if (val !== undefined && val !== "") {
-              // Creates query params like: `amount[min]=10&amount[max]=100`
-              urlWithParams.searchParams.set(`${id}[${key}]`, String(val));
-            }
-          });
-        } else {
-          // This block IS executed because 'female' is a string
-          urlWithParams.searchParams.set(id, String(value));
-        }
-      }
-    });
-
-    return urlWithParams.toString();
-  };
-
-  const fetcher = async (fetchUrl) => {
-    if (isErrored) return [];
-
-    try {
-      const response = await fetch(fetchUrl, {
-        method: method,
-        headers: headers,
-        body: bodyData ? JSON.stringify(bodyData) : undefined,
-      });
-
-      if (!response.ok) {
-        const errorData = await response
-          .json()
-          .catch(() => ({ message: response.statusText }));
-        const error = new Error(
-          errorData.message || "An unknown error occurred"
-        );
-        setIsErrored(true);
-        throw error;
-      }
-      const json = await response.json();
-      console.log("API full response:", json);
-
-      // ✅ Directly access result set
-      const resultSet = getNestedValue(json, dataKey, []);
-      console.log("Extracted resultSet:", resultSet);
-
-      return resultSet;
-    } catch (error) {
-      setIsErrored(true);
-      console.error(error);
-      return [];
-    }
-  };
-
-  const {
-    data: infiniteQueryData,
-    error,
-    isLoading,
-    isValidating,
-    size,
-    setSize,
-  } = useSWRInfinite(getKey, fetcher);
-
-  const isError = !!error;
-
-  const tableData = React.useMemo(
-    () => (enablePagination ? data : infiniteQueryData?.flat() ?? []),
-    [enablePagination, data, infiniteQueryData]
-  );
-
   React.useEffect(() => {
-    updateModel({ data: tableData });
-  }, [tableData]);
+    updateModel({ data });
+  }, [data]);
 
   const isFetchingNextPage = isValidating;
   const hasNextPage = infiniteQueryData
@@ -795,8 +421,7 @@ export function Table({ model, updateModel, triggerEvent }) {
   };
 
   const columns = React.useMemo(() => {
-    if (!tableData.length) return [];
-    console.log("data", tableData);
+    if (!data.length) return [];
 
     const indexColumns = [];
     if (rowIndexColumn?.enable) {
@@ -872,7 +497,7 @@ export function Table({ model, updateModel, triggerEvent }) {
       );
     }
 
-    const autoCols = Object.keys(tableData[0])
+    const autoCols = Object.keys(data[0])
       .map((colKey) => {
         if (!schema[colKey]) {
           console.warn(`Column "${colKey}" not found in schema, skipping.`);
@@ -985,7 +610,7 @@ export function Table({ model, updateModel, triggerEvent }) {
         }
 
         if (type === "number" || type === "currency") {
-          const columnValues = tableData
+          const columnValues = data
             .map((row) => row[colKey])
             .filter((v) => typeof v === "number" && isFinite(v));
 
@@ -1184,7 +809,7 @@ export function Table({ model, updateModel, triggerEvent }) {
 
     return [...pinColumn, ...indexColumns, ...autoCols, ...actionColumns];
   }, [
-    tableData,
+    data,
     schema,
     rowActions,
     actionSize,
@@ -1197,7 +822,7 @@ export function Table({ model, updateModel, triggerEvent }) {
   ]);
 
   const table = useReactTable({
-    data: tableData,
+    data,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
@@ -1394,40 +1019,6 @@ export function Table({ model, updateModel, triggerEvent }) {
     }
   }, [rowSelection, rowSelectionAction, table]);
 
-  const loadMoreRef = React.useRef(null);
-  console.log(columnFilters);
-
-  React.useEffect(() => {
-    if (enablePagination || !hasNextPage || isFetchingNextPage) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting) {
-          setSize(size + 1);
-        }
-      },
-      { threshold: 0.1 }
-    );
-
-    if (loadMoreRef.current) {
-      observer.observe(loadMoreRef.current);
-    }
-
-    return () => {
-      if (loadMoreRef.current) {
-        observer.unobserve(loadMoreRef.current);
-      }
-    };
-  }, [enablePagination, hasNextPage, isFetchingNextPage, size, setSize]);
-
-  if (isError) {
-    return (
-      <div className="text-center p-8 text-lg text-red-600">
-        {t("error")} {error.code} {error.message}{" "}
-      </div>
-    );
-  }
-
   if (isLoading) {
     return (
       <div className="text-center flex justify-center h-full p-8 items-center">
@@ -1449,7 +1040,7 @@ export function Table({ model, updateModel, triggerEvent }) {
     );
   }
 
-  if (tableData.length === 0) {
+  if (data.length === 0) {
     return <div className="text-center p-8 text-lg">{t("noData")}</div>;
   }
 
@@ -1614,3 +1205,4 @@ export function Table({ model, updateModel, triggerEvent }) {
     </div>
   );
 }
+export default TestTable;

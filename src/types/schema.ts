@@ -1,5 +1,13 @@
 // Allowed column data types
-export type ColumnType = "id" | "text" | "phone" | "date" | "number" | "bool";
+export enum ColumnType {
+  TEXT = "text",
+  NUMBER = "number",
+  ENUM = "enum",
+  BOOL = "bool",
+  ID = "id",
+  DATE = "date",
+  CURRENCY = "currency",
+}
 
 // Optional size for some columns
 export type ColumnSize = "sm" | "md" | "lg";

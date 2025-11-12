@@ -47,25 +47,25 @@ export default defineConfig([
       parser: tseslint.parser,
     },
     rules: {
-      // Turn off most of TypeScript's strictness
-      "@typescript-eslint/no-unused-vars": "off",
-      "@typescript-eslint/no-explicit-any": "off",
-      "@typescript-eslint/explicit-function-return-type": "off",
-      "@typescript-eslint/no-non-null-assertion": "off",
-      "@typescript-eslint/ban-ts-comment": "off",
+      // Turn warn most of TypeScript's strictness
+      "@typescript-eslint/no-unused-vars": "warn",
+      "@typescript-eslint/no-explicit-any": "warn",
+      "@typescript-eslint/explicit-function-return-type": "warn",
+      "@typescript-eslint/no-non-null-assertion": "warn",
+      "@typescript-eslint/ban-ts-comment": "warn",
 
       // Make React hooks less strict
       "react-hooks/rules-of-hooks": "warn",
-      "react-hooks/exhaustive-deps": "off",
+      "react-hooks/exhaustive-deps": "warn",
 
       // React Fast Refresh plugin optional
-      "react-refresh/only-export-components": "off",
+      "react-refresh/only-export-components": "warn",
 
       // General JS rules relaxed
-      "no-unused-vars": "off",
-      "no-undef": "off",
-      "no-console": "off",
-      "no-debugger": "off",
+      "no-unused-vars": "warn",
+      "no-undef": "warn",
+      "no-console": "warn",
+      "no-debugger": "warn",
     },
   },
 ]);

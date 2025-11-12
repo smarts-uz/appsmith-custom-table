@@ -1,0 +1,114 @@
+import type { Column } from "@tanstack/react-table";
+
+import { TableFilterText } from "./filter-text";
+import { TableFilterBoolean } from "./filter-bool";
+import { TableFilterDate, type DateFilterValue } from "./filter-date";
+import { TableFilterNumber } from "./filter-num";
+import { TableFilterEnum } from "./filter-enum";
+import { ColumnType } from "@/types/schema";
+
+type TableFiltersProps<TData> = {
+  column: Column<TData, any>;
+  t: (key: string, opts?: Record<string, any>) => string;
+};
+
+export function TableFilters<TData>({ column, t }: TableFiltersProps<TData>) {
+  const meta = column.columnDef.meta as
+    | { ColumnType?: ColumnType; headerText?: string }
+    | undefined;
+  const ColumnType = meta?.ColumnType;
+  const metaHeaderText = meta?.headerText;
+  const columnFilterValue = column.getFilterValue();
+  const header = column.columnDef.header;
+  const headerText =
+    metaHeaderText || (typeof header === "string" ? header : column.id);
+
+  if (!ColumnType) return null;
+
+  const filterId = `filter-${column.id}`;
+
+  const renderFilter = () => {
+    switch (ColumnType) {
+      case ColumnType.TEXT:
+      case ColumnType.ID:
+        return (
+          <TableFilterText
+            column={column}
+            columnFilterValue={
+              typeof columnFilterValue === "string" ||
+              typeof columnFilterValue === "undefined"
+                ? columnFilterValue
+                : undefined
+            }
+            filterId={filterId}
+            headerText={headerText}
+            t={t}
+          />
+        );
+      case ColumnType.NUMBER:
+      case ColumnType.CURRENCY:
+        return (
+          <TableFilterNumber
+            column={column}
+            columnFilterValue={
+              (typeof columnFilterValue === "object" &&
+                columnFilterValue !== null) ||
+              typeof columnFilterValue === "undefined"
+                ? (columnFilterValue as Exclude<typeof columnFilterValue, null>)
+                : undefined
+            }
+            filterId={filterId}
+            headerText={headerText}
+            t={t}
+          />
+        );
+      case ColumnType.ENUM:
+        return (
+          <TableFilterEnum
+            column={column}
+            columnFilterValue={columnFilterValue}
+            filterId={filterId}
+            headerText={headerText}
+            t={t}
+          />
+        );
+      case ColumnType.BOOL:
+        return (
+          <TableFilterBoolean
+            column={column}
+            columnFilterValue={
+              typeof columnFilterValue === "boolean" ||
+              typeof columnFilterValue === "string" ||
+              typeof columnFilterValue === "undefined" ||
+              columnFilterValue === null
+                ? columnFilterValue
+                : undefined
+            }
+            filterId={filterId}
+            headerText={headerText}
+            t={t}
+          />
+        );
+      case ColumnType.DATE:
+        return (
+          <TableFilterDate
+            column={column}
+            columnFilterValue={
+              (typeof columnFilterValue === "object" &&
+                columnFilterValue !== null) ||
+              typeof columnFilterValue === "undefined"
+                ? (columnFilterValue as DateFilterValue | undefined)
+                : undefined
+            }
+            filterId={filterId}
+            headerText={headerText}
+            t={t}
+          />
+        );
+      default:
+        return null;
+    }
+  };
+
+  return <div className="form-control">{renderFilter()}</div>;
+}
