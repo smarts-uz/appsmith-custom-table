@@ -19,6 +19,7 @@ import {
 import { Toaster } from "sonner";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { fetcherFN } from "./lib/fetcherFN";
+import { Card, CardContent, CardHeader } from "../ui/card";
 interface TableProps {
   model?: any;
   updateModel?: any;
@@ -88,7 +89,7 @@ function Table({
   const t = React.useCallback(getT(translations, defaultTranslations), [
     translations,
   ]);
-  // const [sorting, setSorting] = React.useState([]);
+  const [sorting] = React.useState([]);
   const [pagination, setPagination] = React.useState({
     pageIndex: 0,
     pageSize: pageSize,
@@ -150,7 +151,7 @@ function Table({
     onRowSelectionChange: setRowSelection,
     onRowPinningChange: setRowPinning,
     state: {
-      // sorting,
+      sorting,
       rowSelection,
       // columnPinning,
       // columnFilters,
@@ -197,8 +198,8 @@ function Table({
   }
 
   return (
-    <main className="font-sans flex flex-col h-full">
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
+    <Card>
+      <CardHeader className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
         {table
           .getHeaderGroups()
           .map((headerGroup) =>
@@ -208,16 +209,17 @@ function Table({
               ) : null
             )
           )}
-      </div>
-
-      <table
-        className="table table-fixed table-pin-rows table-pin-cols w-full"
-        style={{ minWidth: table.getTotalSize() }}
-      >
-        <THead table={table} />
-        <TBody table={table} />
-      </table>
-    </main>
+      </CardHeader>
+      <CardContent>
+        <table
+          className="table table-fixed table-pin-rows table-pin-cols w-full"
+          style={{ minWidth: table.getTotalSize() }}
+        >
+          <THead table={table} />
+          <TBody table={table} />
+        </table>
+      </CardContent>
+    </Card>
   );
 }
 export function MainTable(props: any) {

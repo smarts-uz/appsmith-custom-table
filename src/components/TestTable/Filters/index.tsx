@@ -2,10 +2,10 @@ import type { Column } from "@tanstack/react-table";
 
 import { TableFilterText } from "./filter-text";
 import { TableFilterBoolean } from "./filter-bool";
-import { TableFilterDate, type DateFilterValue } from "./filter-date";
 import { TableFilterNumber } from "./filter-num";
 import { TableFilterEnum } from "./filter-enum";
 import { ColumnType } from "@/types/schema";
+import { TableFilterId } from "./filter-id";
 
 type TableFiltersProps<TData> = {
   column: Column<TData, any>;
@@ -27,8 +27,22 @@ export function TableFilters<TData>({ column, t }: TableFiltersProps<TData>) {
 
   const renderFilter = () => {
     switch (filterVariant) {
-      case ColumnType.TEXT:
       case ColumnType.ID:
+        return (
+          <TableFilterId
+            column={column}
+            columnFilterValue={
+              typeof columnFilterValue === "string" ||
+              typeof columnFilterValue === "undefined"
+                ? columnFilterValue
+                : undefined
+            }
+            filterId={filterId}
+            headerText={headerText}
+            t={t}
+          />
+        );
+      case ColumnType.TEXT:
         return (
           <TableFilterText
             column={column}
@@ -80,22 +94,6 @@ export function TableFilters<TData>({ column, t }: TableFiltersProps<TData>) {
               typeof columnFilterValue === "undefined" ||
               columnFilterValue === null
                 ? columnFilterValue
-                : undefined
-            }
-            filterId={filterId}
-            headerText={headerText}
-            t={t}
-          />
-        );
-      case ColumnType.DATE:
-        return (
-          <TableFilterDate
-            column={column}
-            columnFilterValue={
-              (typeof columnFilterValue === "object" &&
-                columnFilterValue !== null) ||
-              typeof columnFilterValue === "undefined"
-                ? (columnFilterValue as DateFilterValue | undefined)
                 : undefined
             }
             filterId={filterId}

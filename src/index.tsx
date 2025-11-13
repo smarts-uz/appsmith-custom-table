@@ -9,6 +9,6 @@ import { mockModel } from "./mock.model";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <TestTable model={mockModel} />;
+    <TestTable model={mockModel} />
   </StrictMode>
 );

@@ -21,6 +21,8 @@ type TableFilterNumberProps<TData> = {
   t: (key: string, opts?: Record<string, any>) => string;
 };
 
+const EMPTY_OPTION = "__all__"; // sentinel value for "no filter"
+
 export function TableFilterNumber<TData>({
   column,
   columnFilterValue,
@@ -30,35 +32,40 @@ export function TableFilterNumber<TData>({
 }: TableFilterNumberProps<TData>) {
   const minId = `${filterId}-min`;
   const maxId = `${filterId}-max`;
-  // @ts-expect-error: minOptions and maxOptions are potentially injected via meta at runtime
+  // @ts-expect-error: meta options injected at runtime
   const minOptions = column.columnDef.meta?.minOptions ?? [];
-  // @ts-expect-error: minOptions and maxOptions are potentially injected via meta at runtime
+  // @ts-expect-error: meta options injected at runtime
   const maxOptions = column.columnDef.meta?.maxOptions ?? [];
 
   const handleMinChange = (value: string) => {
     column.setFilterValue((old = {}) => ({
       ...old,
-      min: isEmpty(value) ? undefined : Number(value),
+      min: value === EMPTY_OPTION ? undefined : Number(value),
     }));
   };
 
   const handleMaxChange = (value: string) => {
     column.setFilterValue((old = {}) => ({
       ...old,
-      max: isEmpty(value) ? undefined : Number(value),
+      max: value === EMPTY_OPTION ? undefined : Number(value),
     }));
   };
 
+  /*
+    TODO: Fix why columnFilterValue is not working
+  
+  */
+  console.log("column", columnFilterValue);
+  const minValue = isEmpty(columnFilterValue?.min)
+    ? EMPTY_OPTION
+    : String(columnFilterValue?.min);
+  const maxValue = isEmpty(columnFilterValue?.max)
+    ? EMPTY_OPTION
+    : String(columnFilterValue?.max);
+
   return (
     <div className="flex items-center gap-2">
-      <Select
-        value={
-          isEmpty(columnFilterValue?.min)
-            ? ""
-            : String(columnFilterValue?.min ?? "")
-        }
-        onValueChange={handleMinChange}
-      >
+      <Select value={minValue} onValueChange={handleMinChange}>
         <SelectTrigger
           id={minId}
           aria-label={t("numberMinAriaLabel", { headerText })}
@@ -67,9 +74,9 @@ export function TableFilterNumber<TData>({
           <SelectValue placeholder={t("min")} />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="">{t("all")}</SelectItem>
-          {minOptions.map((item: number, index: number) => (
-            <SelectItem key={index} value={String(item)}>
+          <SelectItem value={EMPTY_OPTION}>{t("all")}</SelectItem>
+          {minOptions.map((item: number) => (
+            <SelectItem key={item} value={String(item)}>
               {item}
             </SelectItem>
           ))}
@@ -78,14 +85,7 @@ export function TableFilterNumber<TData>({
 
       <span>-</span>
 
-      <Select
-        value={
-          isEmpty(columnFilterValue?.max)
-            ? ""
-            : String(columnFilterValue?.max ?? "")
-        }
-        onValueChange={handleMaxChange}
-      >
+      <Select value={maxValue} onValueChange={handleMaxChange}>
         <SelectTrigger
           id={maxId}
           aria-label={t("numberMaxAriaLabel", { headerText })}
@@ -94,9 +94,9 @@ export function TableFilterNumber<TData>({
           <SelectValue placeholder={t("max")} />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="">{t("all")}</SelectItem>
-          {maxOptions.map((item: number, index: number) => (
-            <SelectItem key={index} value={String(item)}>
+          <SelectItem value={EMPTY_OPTION}>{t("all")}</SelectItem>
+          {maxOptions.map((item: number) => (
+            <SelectItem key={item} value={String(item)}>
               {item}
             </SelectItem>
           ))}

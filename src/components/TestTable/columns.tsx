@@ -1,7 +1,6 @@
 import type { ColumnDef } from "@tanstack/react-table";
 import { IndexCell, PinCell, ActionCell } from "./TableCells";
 import { type ColumnParams, ItemSize } from "./table.types";
-import { Sun } from "lucide-react";
 
 export function createColumns<TData>({
   data,
@@ -54,19 +53,21 @@ export function createColumns<TData>({
 
   const autoCols = Object.entries(schema)
     .map(([colKey, colSchema]) => {
-      const { type, sort, filter, size = "md", textAlign, title } = colSchema;
+      const {
+        type,
+        sort,
+        filter,
+        size = ItemSize.md,
+        textAlign,
+        title,
+      } = colSchema;
       const headerText = title || colKey[0].toUpperCase() + colKey.slice(1);
 
       const colDef: ColumnDef<TData> = {
         accessorKey: colKey,
         header: sort
           ? ({ column }) => (
-              <button
-                className="flex items-center gap-2"
-                onClick={() => column.toggleSorting()}
-              >
-                {headerText} <Sun />
-              </button>
+              <span onClick={() => column.toggleSorting()}>{headerText}</span>
             )
           : headerText,
         size: sizeMap[size] || 120,
