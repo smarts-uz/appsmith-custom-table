@@ -5,7 +5,15 @@ import { createRoot } from "react-dom/client";
 import "./tailwind.css";
 import TestTable from "./components/TestTable";
 import React from "react";
-import { mockModel } from "./mock.model";
+import { postsTableSchema } from "./types/mock";
+
+export const mockModel = {
+  fetcher: {
+    url: "https://jsonplaceholder.typicode.com/posts",
+    method: "GET",
+  },
+  schema: postsTableSchema,
+};
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>

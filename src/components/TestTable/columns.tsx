@@ -1,23 +1,20 @@
 import type { ColumnDef } from "@tanstack/react-table";
-import { IndexCell, PinCell, ActionCell } from "./TableCells";
+import { IndexCell, ActionCell } from "./TableCells";
 import { type ColumnParams, ItemSize } from "./table.types";
 
 export function createColumns<TData>({
   data,
   schema,
   indexRow,
-  enableRowPinning = false,
   rowActions = [],
-  actionSize = ItemSize.md,
-  actionPin,
-  t,
+  actionColumn,
 }: ColumnParams<TData>): ColumnDef<TData>[] {
   if (!data.length) return [];
 
   const sizeMap = { xs: 40, sm: 80, md: 120, lg: 160, xl: 200 };
 
   const indexColumns: ColumnDef<TData>[] = [];
-  if (indexRow.enable) {
+  if (indexRow?.enable) {
     indexColumns.push({
       id: "#",
       header: "#",
@@ -30,16 +27,6 @@ export function createColumns<TData>({
   }
 
   const pinColumns: ColumnDef<TData>[] = [];
-  if (enableRowPinning) {
-    pinColumns.push({
-      id: "pin",
-      header: t("pinRow"),
-      size: sizeMap.md,
-      cell: ({ row }) => <PinCell row={row} t={t} />,
-      meta: { textAlign: "center" },
-    });
-  }
-
   const autoCols = Object.entries(schema)
     .map(([colKey, colSchema]) => {
       const {
@@ -77,11 +64,11 @@ export function createColumns<TData>({
     .filter(Boolean) as ColumnDef<TData>[];
 
   const actionColumns: ColumnDef<TData>[] = [];
-  if (indexRow.enable && rowActions.length) {
+  if (indexRow?.enable && rowActions.length) {
     actionColumns.push({
       id: "actions",
       header: "",
-      size: sizeMap[actionSize] || sizeMap.md,
+      size: sizeMap[actionColumn?.size || ItemSize.md],
       // @ts-expect-error 'pin' is not a known property of ColumnDef but is used for custom logic
       pin: actionPin,
       cell: ({ row }) => <ActionCell row={row} rowActions={rowActions} />,

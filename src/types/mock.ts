@@ -1,4 +1,5 @@
 import { type TableSchema, ColumnType } from "./schema";
+import { ItemSize } from "@/components/TestTable/table.types";
 
 export const postsTableSchema: TableSchema = {
   userId: {
@@ -6,27 +7,27 @@ export const postsTableSchema: TableSchema = {
     title: "User ID",
     sort: true,
     filter: true,
-    size: "sm",
+    size: ItemSize.sm,
   },
   id: {
     type: ColumnType.ID,
     title: "Post ID",
     sort: true,
     filter: true,
-    size: "sm",
+    size: ItemSize.sm,
   },
   title: {
     type: ColumnType.TEXT,
     title: "Title",
     sort: true,
     filter: true,
-    size: "md",
+    size: ItemSize.sm,
   },
   body: {
     type: ColumnType.TEXT,
     title: "Body",
     sort: false,
     filter: true,
-    size: "lg",
+    size: ItemSize.sm,
   },
 };

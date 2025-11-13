@@ -5,7 +5,7 @@ type FetcherOptions = {
   method?: "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
   headers?: Record<string, string>;
   body?: BodyInit | null;
-  accessor?: string; // string path like "data.items"
+  accessor?: string; 
   cb?: (data: any) => void;
 };
 

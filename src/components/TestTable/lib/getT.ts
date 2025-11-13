@@ -1,5 +1,5 @@
-type Translations = Record<string, string>;
-type Replacements = Record<string, string | number | boolean | null | undefined>;
+type Translations = Record<string, string> | undefined;
+type Replacements = Record<string, string>;
 
 export const getT =
   (translations: Translations, defaultTranslations: Translations) =>
@@ -7,7 +7,10 @@ export const getT =
     key: K,
     replacements: Replacements = {}
   ): string => {
-    const template = translations?.[key] ?? defaultTranslations[key];
+    const template =
+      (translations && translations[key as string]) ??
+      (defaultTranslations && defaultTranslations[key as string]);
+
     if (!template) {
       return String(key);
     }

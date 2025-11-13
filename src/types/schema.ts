@@ -1,3 +1,5 @@
+import type { ItemSize } from "@/components/TestTable/table.types";
+
 // Allowed column data types
 export enum ColumnType {
   TEXT = "text",
@@ -10,16 +12,13 @@ export enum ColumnType {
   PHONE = "phone",
 }
 
-// Optional size for some columns
-export type ColumnSize = "sm" | "md" | "lg";
-
 // Individual column schema
 export interface ColumnSchema {
   type: ColumnType;
-  title: string;
+  title?: string;
   sort?: boolean;
   filter?: boolean;
-  size?: ColumnSize;
+  size?: ItemSize;
 }
 
 export type TableSchema = Record<string, ColumnSchema>;

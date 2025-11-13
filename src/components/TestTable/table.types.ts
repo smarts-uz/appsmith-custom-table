@@ -1,8 +1,8 @@
 import type { ColumnType } from "@/types/schema";
 
-export type RowAction<TData> = {
+export type RowAction = {
   title: string;
-  onClick: (rowData: TData) => void;
+  onClick: string;
 };
 
 export enum ItemSize {
@@ -37,15 +37,42 @@ type IndexRow = {
   pin: PinDirection | null;
 };
 
+export enum HTTP_METHODS {
+  "GET" = "GET",
+  "POST" = "POST",
+  "PUT" = "PUT",
+  "DELETE" = "DELETE",
+  "PATCH" = "PATCH",
+}
+
+type Fetcher = {
+  url: string;
+  method: HTTP_METHODS;
+  headers?: Record<string, string>;
+  body?: BodyInit | null;
+  accessor?: string;
+};
+
 export type ColumnParams<TData> = {
   data: TData[];
   schema: Record<string, ColumnSchemaItem>;
-  indexRow: IndexRow;
-  enableRowPinning?: boolean;
-  rowActions?: RowAction<TData>[];
-  actionSize?: ItemSize;
-  actionPin?: PinDirection | null;
-  t: (key: string) => string;
-  openDropdownRowId?: string | null;
-  setOpenDropdownRowId?: (id: string | null) => void;
+  indexRow?: IndexRow;
+  rowActions?: RowAction[];
+  actionColumn?: ActionColumn;
+};
+
+type ActionColumn = {
+  enable: boolean;
+  pin: PinDirection | null;
+  size: ItemSize;
+};
+
+export type TableModel = {
+  fetcher: Fetcher;
+  schema: Record<string, ColumnSchemaItem>;
+  indexRow?: IndexRow;
+  rowActions?: RowAction[];
+  rowSelectionAction?: string;
+  actionColumn?: ActionColumn;
+  translations?: Record<string, string>;
 };

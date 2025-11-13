@@ -19,25 +19,25 @@ import { Toaster } from "sonner";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { fetcherFN } from "./lib/fetcherFN";
 import { Card, CardContent, CardHeader } from "../ui/card";
+import type { TableModel } from "./table.types";
+import { postsTableSchema } from "@/types/mock";
+import { defaultTranslations } from "./lib/translations";
+import { HTTP_METHODS } from "./table.types";
+
 interface TableProps {
-  model?: any;
-  updateModel?: any;
-  triggerEvent?: any;
+  model: TableModel;
+  updateModel?: (data: any) => void;
+  triggerEvent?: (key: string, data: any) => void;
 }
 
 const fallbackModel = {
-  fetcher: {}, // CRITICAL
-  schema: {}, // CRITICAL
-  rowActions: {},
-  indexRow: {
-    enable: true,
+  fetcher: {
+    url: "https://jsonplaceholder.typicode.com/users",
+    method: HTTP_METHODS.GET,
   },
-  rowSelectionAction: "",
-  actionColumn: {
-    pin: "left",
-  },
-  translations: {},
+  schema: postsTableSchema,
 };
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -49,9 +49,7 @@ const queryClient = new QueryClient({
 });
 
 /* 
-  TODO:
-    1. If data does not match schema it should not be rendered. 
-
+  TODO: 1. If data does not match schema it should not be rendered. 
 */
 
 function Table({
@@ -60,16 +58,15 @@ function Table({
   triggerEvent = () => {},
 }: TableProps) {
   const {
-    schema = fallbackModel.schema,
-    rowActions = fallbackModel.rowActions,
-    rowSelectionAction = fallbackModel.rowSelectionAction,
-    actionColumn = fallbackModel.actionColumn,
-    indexRow = fallbackModel.indexRow,
+    schema,
+    rowActions,
+    rowSelectionAction,
+    actionColumn,
+    indexRow,
     translations,
-    fetcher = fallbackModel.fetcher,
+    fetcher,
   } = model;
   const { url, method, headers, body, accessor } = fetcher;
-  const { pin: actionPin = "left" } = actionColumn;
 
   const { data = [], isLoading } = useQuery({
     queryKey: ["data"],
@@ -112,15 +109,15 @@ function Table({
         }
       }
     }
-    if (rowActions.length > 0) {
-      if (actionPin === "left") {
+    if (rowActions?.length > 0) {
+      if (actionColumn?.pin === "left") {
         left.push("actions");
-      } else if (actionPin === "right") {
+      } else if (actionColumn?.pin === "right") {
         right.push("actions");
       }
     }
     return { left, right };
-  }, [schema, rowActions, actionPin]);
+  }, [schema, rowActions]);
 
   const [columnPinning, setColumnPinning] = React.useState(getInitialPinning());
 
@@ -134,7 +131,6 @@ function Table({
     rowActions,
     indexRow,
     actionPin,
-    t,
   });
 
   const table = useReactTable({
@@ -211,6 +207,7 @@ function Table({
     </Card>
   );
 }
+
 export function MainTable(props: any) {
   return (
     <QueryClientProvider client={queryClient}>
@@ -220,28 +217,5 @@ export function MainTable(props: any) {
     </QueryClientProvider>
   );
 }
-const defaultTranslations = {
-  all: "All",
-  min: "Min",
-  max: "Max",
-  filterPlaceholder: "Filter {headerText}...",
-  filterAriaLabel: "Filter by {headerText}",
-  true: "True",
-  false: "False",
-  dateFromAriaLabel: "From {headerText}",
-  dateToAriaLabel: "To {headerText}",
-  numberMinAriaLabel: "Minimum {headerText}",
-  numberMaxAriaLabel: "Maximum {headerText}",
-  goToFirstPage: "Go to first page",
-  goToPreviousPage: "Go to previous page",
-  goToNextPage: "Go to next page",
-  goToLastPage: "Go to last page",
-  error: "Error:",
-  noData: "No data to display",
-  pinRow: "Pin row",
-  unpinRow: "Unpin row",
-  pinToTop: "Pin to top",
-  pinToBottom: "Pin to bottom",
-};
 
 export default MainTable;

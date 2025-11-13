@@ -5,6 +5,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
+import type { RowAction } from "./table.types";
 
 export const IndexCell = ({
   row,
@@ -22,54 +23,12 @@ export const IndexCell = ({
   return <div className="text-center">{index}</div>;
 };
 
-export const PinCell = ({
-  row,
-  t,
-}: {
-  row: any;
-  t: (key: string) => string;
-}) => {
-  return (
-    <div className="flex justify-center gap-1">
-      {row.getIsPinned() ? (
-        <Button
-          size="sm"
-          variant="ghost"
-          onClick={() => row.pin(false)}
-          title={t("unpinRow")}
-        >
-          <span className="icon icon-close" />
-        </Button>
-      ) : (
-        <>
-          <Button
-            size="sm"
-            variant="ghost"
-            onClick={() => row.pin("top")}
-            title={t("pinToTop")}
-          >
-            <span className="icon icon-arrow-up-thick" />
-          </Button>
-          <Button
-            size="sm"
-            variant="ghost"
-            onClick={() => row.pin("bottom")}
-            title={t("pinToBottom")}
-          >
-            <span className="icon icon-arrow-down-thick" />
-          </Button>
-        </>
-      )}
-    </div>
-  );
-};
-
 export const ActionCell = ({
-  row,
+  // row,
   rowActions,
 }: {
   row: any;
-  rowActions: { title: string; onClick: (row: any) => void }[];
+  rowActions: RowAction[];
 }) => {
   return (
     <DropdownMenu>
@@ -84,7 +43,7 @@ export const ActionCell = ({
             key={i}
             onClick={(e) => {
               e.stopPropagation();
-              action.onClick(row.original);
+              // action.onClick(row.original);
             }}
           >
             {action.title}
