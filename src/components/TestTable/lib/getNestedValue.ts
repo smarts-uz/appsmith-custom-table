@@ -5,8 +5,11 @@ export function getNestedValue<T>(
   path?: string,
   defaultValue: T[] = []
 ): T[] {
-  if (!obj || !path) {
-    return defaultValue;
+  if (!obj) return defaultValue;
+
+  // If no path is provided, return the object itself if it's an array
+  if (!path || path === "") {
+    return Array.isArray(obj) ? (obj as T[]) : defaultValue;
   }
 
   const pathArray = path

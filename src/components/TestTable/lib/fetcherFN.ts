@@ -6,6 +6,7 @@ type FetcherOptions = {
   headers?: Record<string, string>;
   body?: BodyInit | null;
   accessor?: string; // string path like "data.items"
+  cb?: (data: any) => void;
 };
 
 export const fetcherFN = async <T = unknown>({
@@ -14,14 +15,19 @@ export const fetcherFN = async <T = unknown>({
   body,
   method = "GET",
   accessor,
+  cb,
 }: FetcherOptions): Promise<T[]> => {
   const res = await fetch(url, { headers, method, body });
-  console.log("json1", res);
 
   if (!res.ok)
     throw new Error(`Network error: ${res.status} ${res.statusText}`);
 
   const json = await res.json();
-  console.log("json", json);
-  return getNestedValue<T>(json, accessor, []);
+  const data = getNestedValue<T>(json, accessor, []);
+
+  if (cb) {
+    cb(data);
+  }
+
+  return data;
 };

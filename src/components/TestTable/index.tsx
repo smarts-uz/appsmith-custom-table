@@ -2,7 +2,6 @@ import React from "react";
 import {
   useReactTable,
   getCoreRowModel,
-  getPaginationRowModel,
   getFilteredRowModel,
   getSortedRowModel,
 } from "@tanstack/react-table";
@@ -27,17 +26,18 @@ interface TableProps {
 }
 
 const fallbackModel = {
-  pagination: {},
-  schema: {},
+  fetcher: {}, // CRITICAL
+  schema: {}, // CRITICAL
   rowActions: {},
+  indexRow: {
+    enable: true,
+  },
   rowSelectionAction: "",
-  actionColumn: {},
-  rowIndexColumn: {},
+  actionColumn: {
+    pin: "left",
+  },
   translations: {},
-  fetcher: {},
 };
-
-// ---- TanStack Query client ----
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -48,11 +48,11 @@ const queryClient = new QueryClient({
   },
 });
 
-const fetchPosts = async () => {
-  const res = await fetch("https://jsonplaceholder.typicode.com/posts");
-  if (!res.ok) throw new Error("Network error");
-  return res.json();
-};
+/* 
+  TODO:
+    1. If data does not match schema it should not be rendered. 
+
+*/
 
 function Table({
   model = fallbackModel,
@@ -60,80 +60,79 @@ function Table({
   triggerEvent = () => {},
 }: TableProps) {
   const {
-    pagination: paginationProps = {},
-    schema = {},
-    rowActions = [],
-    rowSelectionAction = "",
-    actionColumn = {},
-    rowIndexColumn = {},
-    translations = {},
-    fetcher = {},
+    schema = fallbackModel.schema,
+    rowActions = fallbackModel.rowActions,
+    rowSelectionAction = fallbackModel.rowSelectionAction,
+    actionColumn = fallbackModel.actionColumn,
+    indexRow = fallbackModel.indexRow,
+    translations,
+    fetcher = fallbackModel.fetcher,
   } = model;
-  // const { url, method, headers, body, accessor } = fetcher;
-  const { enable: enablePagination = false, pageSize = 20 } = paginationProps;
-  const { pin: actionPin } = actionColumn;
+  const { url, method, headers, body, accessor } = fetcher;
+  const { pin: actionPin = "left" } = actionColumn;
 
   const { data = [], isLoading } = useQuery({
     queryKey: ["data"],
-    queryFn: fetchPosts,
+    queryFn: () =>
+      fetcherFN({
+        url,
+        method,
+        headers,
+        body,
+        accessor,
+        cb: () => {
+          updateModel({ data });
+        },
+      }),
   });
 
   const [rowSelection, setRowSelection] = React.useState({});
   const [rowPinning, setRowPinning] = React.useState({});
-  // const [columnFilters, setColumnFilters] = React.useState([]);
+  const [columnFilters] = React.useState([]);
   const [globalFilter, setGlobalFilter] = React.useState("");
 
   const t = React.useCallback(getT(translations, defaultTranslations), [
     translations,
   ]);
   const [sorting] = React.useState([]);
-  const [pagination, setPagination] = React.useState({
-    pageIndex: 0,
-    pageSize: pageSize,
-  });
 
-  // const getInitialPinning = React.useCallback(() => {
-  //   const left = [];
-  //   const right = [];
+  const getInitialPinning = React.useCallback(() => {
+    const left = [];
+    const right = [];
 
-  //   if (schema && typeof schema === "object") {
-  //     for (const colKey in schema) {
-  //       if (Object.prototype.hasOwnProperty.call(schema, colKey)) {
-  //         const colSchema = schema[colKey];
-  //         if (colSchema && colSchema.pin === "left") {
-  //           left.push(colKey);
-  //         } else if (colSchema && colSchema.pin === "right") {
-  //           right.push(colKey);
-  //         }
-  //       }
-  //     }
-  //   }
-  //   if (rowActions.length > 0) {
-  //     if (actionPin === "left") {
-  //       left.push("actions");
-  //     } else if (actionPin === "right") {
-  //       right.push("actions");
-  //     }
-  //   }
-  //   return { left, right };
-  // }, [schema, rowActions, actionPin]);
+    if (schema && typeof schema === "object") {
+      for (const colKey in schema) {
+        if (Object.prototype.hasOwnProperty.call(schema, colKey)) {
+          const colSchema = schema[colKey];
+          if (colSchema && colSchema.pin === "left") {
+            left.push(colKey);
+          } else if (colSchema && colSchema.pin === "right") {
+            right.push(colKey);
+          }
+        }
+      }
+    }
+    if (rowActions.length > 0) {
+      if (actionPin === "left") {
+        left.push("actions");
+      } else if (actionPin === "right") {
+        right.push("actions");
+      }
+    }
+    return { left, right };
+  }, [schema, rowActions, actionPin]);
 
-  // const [columnPinning, setColumnPinning] = React.useState(getInitialPinning());
+  const [columnPinning, setColumnPinning] = React.useState(getInitialPinning());
 
-  // React.useEffect(() => {
-  //   setColumnPinning(getInitialPinning());
-  // }, [getInitialPinning]);
-
-  // React.useEffect(() => {
-  //   updateModel({ data });
-  // }, [data]);
+  React.useEffect(() => {
+    setColumnPinning(getInitialPinning());
+  }, [getInitialPinning]);
 
   const columns = createColumns({
     data,
     schema,
     rowActions,
-    rowIndexColumn,
-    enablePagination,
+    indexRow,
     actionPin,
     t,
   });
@@ -150,20 +149,13 @@ function Table({
     state: {
       sorting,
       rowSelection,
-      // columnPinning,
-      // columnFilters,
+      columnPinning,
+      columnFilters,
       globalFilter,
       rowPinning,
-      ...(enablePagination ? { pagination } : {}),
     },
     enableRowSelection: true,
     enableMultiRowSelection: false,
-    ...(enablePagination
-      ? {
-          getPaginationRowModel: getPaginationRowModel(),
-          onPaginationChange: setPagination,
-        }
-      : {}),
   });
 
   React.useEffect(() => {

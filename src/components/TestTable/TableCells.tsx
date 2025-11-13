@@ -1,5 +1,3 @@
-// components/TableCells.tsx
-import React from "react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -69,42 +67,18 @@ export const PinCell = ({
 export const ActionCell = ({
   row,
   rowActions,
-  openDropdownRowId,
-  setOpenDropdownRowId,
-  isPinnedLeft,
 }: {
   row: any;
   rowActions: { title: string; onClick: (row: any) => void }[];
-  openDropdownRowId?: string | null;
-  setOpenDropdownRowId?: (id: string | null) => void;
-  isPinnedLeft?: boolean;
 }) => {
-  const isOpen = openDropdownRowId === row.id;
-  const toggle = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setOpenDropdownRowId?.(isOpen ? null : row.id);
-  };
-
   return (
-    <DropdownMenu
-      open={isOpen}
-      onOpenChange={(val) => setOpenDropdownRowId?.(val ? row.id : null)}
-    >
+    <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button
-          variant="ghost"
-          size="sm"
-          className="w-full h-full"
-          onClick={toggle}
-        >
+        <Button variant="ghost" size="sm" className="w-full h-full">
           <span className="icon icon-circle-ellipsis" />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent
-        side={isPinnedLeft ? "right" : "left"}
-        align="start"
-        className="w-56"
-      >
+      <DropdownMenuContent align="start" className="w-56">
         {rowActions.map((action, i) => (
           <DropdownMenuItem
             key={i}

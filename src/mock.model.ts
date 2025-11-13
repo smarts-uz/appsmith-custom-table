@@ -2,10 +2,10 @@ import { postsTableSchema } from "./types/mock";
 
 export const mockModel = {
   fetcher: {
-    url: "https://jsonplaceholder.typicode.com/posts",
+    url: "https://jsonplaceholder.typicode.com/users",
     method: "GET",
     headers: {},
-    body: {},
+    body: null,
     accessor: ""
   },
   schema: postsTableSchema,

@@ -5,37 +5,26 @@ import { type ColumnParams, ItemSize } from "./table.types";
 export function createColumns<TData>({
   data,
   schema,
-  rowIndexColumn,
-  rowIndexPin,
-  rowIndexSize = ItemSize.xs,
-  enablePagination = false,
+  indexRow,
   enableRowPinning = false,
   rowActions = [],
   actionSize = ItemSize.md,
   actionPin,
   t,
-  openDropdownRowId,
-  setOpenDropdownRowId,
 }: ColumnParams<TData>): ColumnDef<TData>[] {
   if (!data.length) return [];
 
-  const sizeMap = { xs: 40, sm: 80, md: 120, lg: 200 };
+  const sizeMap = { xs: 40, sm: 80, md: 120, lg: 160, xl: 200 };
 
   const indexColumns: ColumnDef<TData>[] = [];
-  if (rowIndexColumn?.enable) {
+  if (indexRow.enable) {
     indexColumns.push({
       id: "#",
       header: "#",
-      size: sizeMap[rowIndexSize] || 40,
+      size: sizeMap[indexRow.size] || sizeMap.xs,
       // @ts-expect-error: 'pin' is not part of ColumnDef, but used by the table implementation
-      pin: rowIndexPin,
-      cell: ({ row, table }) => (
-        <IndexCell
-          row={row}
-          table={table}
-          enablePagination={enablePagination}
-        />
-      ),
+      pin: indexRow.pin,
+      cell: ({ row, table }) => <IndexCell row={row} table={table} />,
       meta: { textAlign: "center" },
     });
   }
@@ -45,7 +34,7 @@ export function createColumns<TData>({
     pinColumns.push({
       id: "pin",
       header: t("pinRow"),
-      size: 60,
+      size: sizeMap.md,
       cell: ({ row }) => <PinCell row={row} t={t} />,
       meta: { textAlign: "center" },
     });
@@ -70,7 +59,7 @@ export function createColumns<TData>({
               <span onClick={() => column.toggleSorting()}>{headerText}</span>
             )
           : headerText,
-        size: sizeMap[size] || 120,
+        size: sizeMap[size] || sizeMap.lg,
         enableSorting: sort,
         enableColumnFilter: filter,
         meta: {
@@ -88,22 +77,14 @@ export function createColumns<TData>({
     .filter(Boolean) as ColumnDef<TData>[];
 
   const actionColumns: ColumnDef<TData>[] = [];
-  if (rowIndexColumn?.enable && rowActions.length) {
+  if (indexRow.enable && rowActions.length) {
     actionColumns.push({
       id: "actions",
       header: "",
-      size: sizeMap[actionSize] || 80,
+      size: sizeMap[actionSize] || sizeMap.md,
       // @ts-expect-error 'pin' is not a known property of ColumnDef but is used for custom logic
       pin: actionPin,
-      cell: ({ row, column }) => (
-        <ActionCell
-          row={row}
-          rowActions={rowActions}
-          openDropdownRowId={openDropdownRowId}
-          setOpenDropdownRowId={setOpenDropdownRowId}
-          isPinnedLeft={column.getIsPinned() === "left"}
-        />
-      ),
+      cell: ({ row }) => <ActionCell row={row} rowActions={rowActions} />,
     });
   }
 

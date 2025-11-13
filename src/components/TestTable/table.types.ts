@@ -12,12 +12,17 @@ export enum ItemSize {
   "lg" = "lg",
 }
 
+export enum PinDirection {
+  left = "left",
+  right = "right",
+}
+
 export type ColumnSchemaItem = {
   type: ColumnType;
   options?: { value: string; title: string }[];
   sort?: boolean;
   filter?: boolean;
-  pin?: "left" | "right" | null;
+  pin?: PinDirection | null;
   size?: ItemSize;
   textAlign?: "left" | "center" | "right";
   title?: string;
@@ -26,19 +31,21 @@ export type ColumnSchemaItem = {
   maxOptions?: number[];
 };
 
+type IndexRow = {
+  enable: boolean;
+  size: ItemSize;
+  pin: PinDirection | null;
+};
+
 export type ColumnParams<TData> = {
   data: TData[];
   schema: Record<string, ColumnSchemaItem>;
-  rowIndexColumn?: { enable?: boolean };
-  rowIndexPin?: "left" | "right" | null;
-  rowIndexSize?: ItemSize;
-  enablePagination?: boolean;
+  indexRow: IndexRow;
   enableRowPinning?: boolean;
   rowActions?: RowAction<TData>[];
   actionSize?: ItemSize;
-  actionPin?: "left" | "right" | null;
+  actionPin?: PinDirection | null;
   t: (key: string) => string;
   openDropdownRowId?: string | null;
   setOpenDropdownRowId?: (id: string | null) => void;
-  formatDateString?: (value: string | Date, format?: string) => string;
 };
