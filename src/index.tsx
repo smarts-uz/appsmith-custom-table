@@ -11,34 +11,35 @@ import type { RowAction, TableModel } from "./widgets/AppsmithTable/types";
 
 const rowActions: RowAction[] = [
   {
-    title: "💻Korish",
+    title: "Korish",
     onClick: "onClick",
-    icon: "Kanban",
+    icon: "Activity",
   },
-  // {
-  //   title: "➕Qoshish",
-  //   onClick: "onKomol",
-  // },
-  // {
-  //   title: "💵Tolov",
-  //   onClick: "onClick",
-  // },
-  // {
-  //   title: "🔃Qaytarilgan mahsulotlar",
-  //   onClick: "onClick",
-  // },
-  // {
-  //   title: "🫰Qaytarish",
-  //   onClick: "onClick",
-  // },
-  // {
-  //   title: "✏️Tahrirlash",
-  //   onClick: "onClick",
-  // },
-  // {
-  //   title: "🏁Tugatish",
-  //   onClick: "onClick",
-  // },
+  {
+    title: "Qoshish",
+    onClick: "onKomol",
+    icon: "AlarmClockPlus",
+  },
+  {
+    title: "Tolov",
+    onClick: "onClick",
+  },
+  {
+    title: "Qaytarilgan mahsulotlar",
+    onClick: "onClick",
+  },
+  {
+    title: "Qaytarish",
+    onClick: "onClick",
+  },
+  {
+    title: "Tahrirlash",
+    onClick: "onClick",
+  },
+  {
+    title: "Tugatish",
+    onClick: "onClick",
+  },
 ];
 
 const actionColumn = {

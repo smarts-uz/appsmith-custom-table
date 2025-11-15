@@ -101,30 +101,20 @@ function CustomTable({
   const [sorting] = React.useState([]);
 
   const getInitialPinning = React.useCallback(() => {
-    const left = [];
-    const right = [];
+    const left: string[] = [];
+    const right: string[] = [];
 
-    if (schema && typeof schema === "object") {
-      for (const colKey in schema) {
-        if (Object.prototype.hasOwnProperty.call(schema, colKey)) {
-          const colSchema = schema[colKey];
-          if (colSchema) {
-            left.push(colKey);
-          } else if (colSchema) {
-            right.push(colKey);
-          }
-        }
-      }
+    if (indexRow?.enable) {
+      left.push("#");
     }
-    if (rowActions && rowActions?.length > 0) {
-      if (actionColumn?.pin === PinDirection.left) {
-        left.push("actions");
-      } else if (actionColumn?.pin === PinDirection.right) {
-        right.push("actions");
-      }
+
+    if (actionColumn?.enable && rowActions && rowActions?.length > 0) {
+      if (actionColumn.pin === PinDirection.left) left.push("actions");
+      else if (actionColumn.pin === PinDirection.right) right.push("actions");
     }
+
     return { left, right };
-  }, [schema, rowActions]);
+  }, [indexRow, actionColumn, rowActions]);
 
   const [columnPinning, setColumnPinning] = React.useState(getInitialPinning());
 

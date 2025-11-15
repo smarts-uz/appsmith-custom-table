@@ -59,7 +59,7 @@ export function ActionCell<TData>({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
-        <Button variant="ghost" size="sm" className="w-full h-full p-2">
+        <Button variant="ghost" asChild size="sm" className="w-full h-full p-2">
           <LucideIcons.MoreVertical className="w-4 h-4" />
         </Button>
       </DropdownMenuTrigger>
@@ -68,12 +68,11 @@ export function ActionCell<TData>({
         {rowActions.map((action, i) => (
           <DropdownMenuItem
             key={i}
+            className="flex items-center gap-2"
             onClick={() => handleAction(action.onClick)}
           >
-            <div className="flex items-center gap-2">
-              {renderIcon(action.icon as keyof typeof LucideIcons)}
-              {action.title}
-            </div>
+            {renderIcon(action.icon as keyof typeof LucideIcons)}
+            {action.title}
           </DropdownMenuItem>
         ))}
       </DropdownMenuContent>

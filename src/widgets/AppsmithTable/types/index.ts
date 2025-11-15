@@ -1,15 +1,6 @@
 import { ColumnType, ItemSize, PinDirection, HTTP_METHODS } from "../constants";
 import z from "zod";
-import { type LucideIconName } from "./icons";
 import * as LucideIcons from "lucide-react";
-// export type ColumnParams = {
-//   schema: Record<string, ColumnItem>;
-//   indexRow?: IndexRow;
-//   rowActions?: RowAction[];
-//   actionColumn?: ActionColumn;
-//   triggerEvent: TriggerEvent;
-// };
-export type TriggerEvent = (key: string, data: any) => void;
 
 const ColumnItemSchema = z.object({
   type: z.enum(ColumnType),
@@ -39,7 +30,7 @@ export const IndexRowSchema = z.object({
 export const ActionColumnSchema = z.object({
   enable: z.boolean(),
   size: z.enum(ItemSize).default(ItemSize.md),
-  pin: z.enum(PinDirection).default(PinDirection.right),
+  pin: z.enum(PinDirection).default(PinDirection.left),
 });
 
 export const RowActionSchema = z.object({
@@ -66,3 +57,5 @@ export type IndexRow = z.infer<typeof IndexRowSchema>;
 export type ActionColumn = z.infer<typeof ActionColumnSchema>;
 export type RowAction = z.infer<typeof RowActionSchema>;
 export type Fetcher = z.infer<typeof FetcherSchema>;
+export type LucideIconName = keyof typeof LucideIcons;
+export type TriggerEvent = (key: string, data: any) => void;

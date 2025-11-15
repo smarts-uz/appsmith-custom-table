@@ -28,7 +28,6 @@ export function createColumns<TData>({
       id: "#",
       header: "#",
       size: SIZE_MAP[indexRow.size || ItemSize.xs],
-      enablePinning: true,
       cell: ({ row, table }) => <IndexCell row={row} table={table} />,
     });
   }
