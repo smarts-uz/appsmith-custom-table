@@ -41,11 +41,13 @@ export const RowActionSchema = z.object({
     .optional(),
 });
 
+export const TableSchema = z.record(z.string(), ColumnItemSchema, {
+  error: "Schema not provided",
+});
+
 export const TableModelSchema = z.object({
   fetcher: FetcherSchema,
-  schema: z.record(z.string(), ColumnItemSchema, {
-    error: "Schema not provided",
-  }),
+  schema: TableSchema,
   indexRow: IndexRowSchema.optional(),
   rowActions: z.array(RowActionSchema).optional(),
   rowSelectionAction: z.string().optional(),
@@ -60,4 +62,5 @@ export type ActionColumn = z.infer<typeof ActionColumnSchema>;
 export type RowAction = z.infer<typeof RowActionSchema>;
 export type Fetcher = z.infer<typeof FetcherSchema>;
 export type LucideIconName = keyof typeof LucideIcons;
+export type Schema = z.infer<typeof TableSchema>;
 export type TriggerEvent = (key: string, data: any) => void;
