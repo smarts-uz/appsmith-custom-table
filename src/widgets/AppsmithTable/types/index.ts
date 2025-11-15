@@ -16,14 +16,14 @@ export type RowAction = {
 
 type ActionColumn = {
   enable: boolean;
-  pin: PinDirection | null;
+  pin?: PinDirection;
   size: ItemSize;
 };
 
 type IndexRow = {
   enable: boolean;
   size: ItemSize;
-  pin: PinDirection | null;
+  pin?: PinDirection | null;
 };
 
 export type ColumnSchemaItem = {
@@ -42,7 +42,7 @@ export type Fetcher = {
   url: string;
   method: HTTP_METHODS;
   headers?: Record<string, string>;
-  body?: BodyInit | null;
+  body?: BodyInit;
   accessor?: string;
 };
 
@@ -52,7 +52,10 @@ export type ColumnParams<TData> = {
   indexRow?: IndexRow;
   rowActions?: RowAction[];
   actionColumn?: ActionColumn;
+  triggerEvent: TriggerEvent;
 };
+
+export type TriggerEvent = (key: string, data: any) => void;
 
 const ColumnSchemaItemSchema = z.object({
   type: z.enum(ColumnType),
@@ -70,7 +73,7 @@ const ColumnSchemaItemSchema = z.object({
 
 const FetcherSchema = z.object({
   url: z.url({ error: "URL is not provided" }),
-  method: z.enum(HTTP_METHODS).optional().default(HTTP_METHODS.GET),
+  method: z.enum(HTTP_METHODS).default(HTTP_METHODS.GET).optional(),
   headers: z.record(z.string(), z.string()).optional(),
   body: z.any().optional(),
   accessor: z.string().optional(),

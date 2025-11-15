@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
-import type { RowAction } from "../types";
+import type { RowAction, TriggerEvent } from "../types";
+import type { Row, Table } from "@tanstack/react-table";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -7,29 +8,26 @@ import {
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
 
-export const IndexCell = ({
-  row,
-  table,
-  enablePagination,
-}: {
-  row: any;
-  table: any;
-  enablePagination?: boolean;
-}) => {
-  const { pageIndex, pageSize } = table.getState().pagination;
-  const index = enablePagination
-    ? pageIndex * pageSize + row.index + 1
-    : row.index + 1;
-  return <div className="text-center">{index}</div>;
+type ActionCellProps<TData> = {
+  row: Row<TData>;
+  table?: Table<TData>; // optional if needed
+  rowActions: RowAction[];
+  triggerEvent: TriggerEvent;
 };
 
-export const ActionCell = ({
-  // row,
+export const ActionCell = <TData,>({
+  row,
   rowActions,
-}: {
-  row: any;
-  rowActions: RowAction[];
-}) => {
+  triggerEvent,
+}: ActionCellProps<TData>) => {
+  const handleAction = (
+    e: React.MouseEvent<HTMLDivElement>,
+    eventName: string
+  ) => {
+    e.stopPropagation();
+    triggerEvent(eventName, { row: row.original });
+  };
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -41,10 +39,7 @@ export const ActionCell = ({
         {rowActions.map((action, i) => (
           <DropdownMenuItem
             key={i}
-            onClick={(e) => {
-              e.stopPropagation();
-              // action.onClick(row.original);
-            }}
+            onClick={(e) => handleAction(e, action.onClick)}
           >
             {action.title}
           </DropdownMenuItem>

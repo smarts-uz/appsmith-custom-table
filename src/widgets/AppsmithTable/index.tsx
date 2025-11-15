@@ -21,14 +21,17 @@ import { fetcherFN } from "./lib/fetcherFN";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { postsTableSchema } from "@/widgets/AppsmithTable/lib/mock.schema";
 import { defaultTranslations } from "./lib/translations";
-import type { TableModel } from "./types";
+import type { TableModel, TriggerEvent } from "./types";
 import { HTTP_METHODS } from "./constants";
 import { validateTableModel } from "./validator/validateTableModal";
+import { Table } from "@/components/ui/table";
+import { InfoCard } from "./components/info-card";
+import { SkeletonTable } from "./components/skeleton-table";
 
 interface TableProps {
   model: TableModel;
   updateModel?: (data: any) => void;
-  triggerEvent?: (key: string, data: any) => void;
+  triggerEvent?: TriggerEvent;
 }
 
 const fallbackModel = {
@@ -53,7 +56,7 @@ const queryClient = new QueryClient({
   TODO: 1. If data does not match schema it should not be rendered. 
 */
 
-function Table({
+function CustomTable({
   model = fallbackModel,
   updateModel = () => {},
   triggerEvent = () => {},
@@ -76,7 +79,7 @@ function Table({
     queryFn: () =>
       fetcherFN({
         url,
-        method,
+        method: method || HTTP_METHODS.GET,
         headers,
         body,
         accessor,
@@ -133,6 +136,7 @@ function Table({
     schema,
     rowActions,
     indexRow,
+    triggerEvent,
   });
 
   const table = useReactTable({
@@ -178,17 +182,19 @@ function Table({
 
   if (!isValid) {
     return (
-      <div className="p-4 text-red-600 border border-red-300 rounded-lg">
-        ⚠️ Table configuration is invalid. Check the errors above.
-      </div>
+      <InfoCard
+        message="Table configuration is invalid. Check the errors above."
+        variant="warning"
+      />
     );
   }
+
   if (isLoading) {
-    return <>Loading...</>;
+    return <SkeletonTable />;
   }
 
   if (data?.length === 0) {
-    return <div className="text-center p-8 text-lg">{t("noData")}</div>;
+    return <InfoCard message={t("noData")} variant="info" />;
   }
 
   return (
@@ -205,13 +211,10 @@ function Table({
           )}
       </CardHeader>
       <CardContent>
-        <table
-          className="table table-fixed table-pin-rows table-pin-cols w-full"
-          style={{ minWidth: table.getTotalSize() }}
-        >
+        <Table className="w-full min-w-80 table-auto">
           <TanstackTableHead table={table} />
           <TanstackTableBody table={table} />
-        </table>
+        </Table>
       </CardContent>
     </Card>
   );
@@ -222,7 +225,7 @@ function AppsmithTable(props: TableProps) {
     <QueryClientProvider client={queryClient}>
       <Toaster />
       <ReactQueryDevtools initialIsOpen={false} />
-      <Table {...props} />
+      <CustomTable {...props} />
     </QueryClientProvider>
   );
 }

@@ -3,7 +3,7 @@ import { ColumnType, ItemSize } from "../constants";
 export const postsTableSchema = {
   userId: {
     type: ColumnType.NUMBER,
-    title: "User ID",
+    title: "lalalu lilalali lulila lulalu, ninanu ninani lilula",
     sort: true,
     filter: true,
     size: ItemSize.sm,

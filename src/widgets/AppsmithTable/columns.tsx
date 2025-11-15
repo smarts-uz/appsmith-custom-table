@@ -1,7 +1,8 @@
 import type { ColumnDef } from "@tanstack/react-table";
-import { IndexCell, ActionCell } from "./components/cells";
+import { ActionCell } from "./components/action-cell";
 import { type ColumnParams } from "./types";
 import { ItemSize } from "./constants";
+import IndexCell from "./components/index-cell";
 
 export function createColumns<TData>({
   data,
@@ -9,6 +10,7 @@ export function createColumns<TData>({
   indexRow,
   rowActions = [],
   actionColumn,
+  triggerEvent,
 }: ColumnParams<TData>): ColumnDef<TData>[] {
   if (!data.length) return [];
 
@@ -26,16 +28,9 @@ export function createColumns<TData>({
     });
   }
 
-  const pinColumns: ColumnDef<TData>[] = [];
   const autoCols = Object.entries(schema)
     .map(([colKey, colSchema]) => {
-      const {
-        type,
-        sort,
-        filter,
-        size = ItemSize.md,
-        title,
-      } = colSchema;
+      const { type, sort, filter, size = ItemSize.md, title } = colSchema;
       const headerText = title || colKey[0].toUpperCase() + colKey.slice(1);
 
       const colDef: ColumnDef<TData> = {
@@ -69,9 +64,15 @@ export function createColumns<TData>({
       size: sizeMap[actionColumn?.size || ItemSize.md],
       // @ts-expect-error 'pin' is not a known property of ColumnDef but is used for custom logic
       pin: actionPin,
-      cell: ({ row }) => <ActionCell row={row} rowActions={rowActions} />,
+      cell: ({ row }) => (
+        <ActionCell
+          triggerEvent={triggerEvent}
+          row={row}
+          rowActions={rowActions}
+        />
+      ),
     });
   }
 
-  return [...pinColumns, ...indexColumns, ...autoCols, ...actionColumns];
+  return [...indexColumns, ...autoCols, ...actionColumns];
 }

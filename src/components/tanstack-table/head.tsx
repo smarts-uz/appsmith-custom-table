@@ -6,10 +6,13 @@ import { TableHeader, TableHead, TableRow } from "@/components/ui/table";
 
 interface HeadProps<TData> {
   table: Table<TData>;
-  className?: string;
+  rowClassName?: string;
 }
 
-const TanstackTableHead = <TData,>({ table, className }: HeadProps<TData>) => {
+const TanstackTableHead = <TData,>({
+  table,
+  rowClassName,
+}: HeadProps<TData>) => {
   return (
     <TableHeader>
       {table.getHeaderGroups().map((headerGroup) => (
@@ -19,8 +22,8 @@ const TanstackTableHead = <TData,>({ table, className }: HeadProps<TData>) => {
               key={header.id}
               colSpan={header.colSpan}
               className={cn(
-                "text-center select-none px-0.5 py-1 text-xs xs:text-sm md:p-1 md:text-start min-w-6",
-                className,
+                "whitespace-normal break-words",
+                rowClassName,
                 header.column.getCanSort() ? "cursor-pointer" : ""
               )}
               onClick={header.column.getToggleSortingHandler()}
