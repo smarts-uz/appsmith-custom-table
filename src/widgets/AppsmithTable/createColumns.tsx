@@ -1,8 +1,7 @@
 import type { ColumnDef } from "@tanstack/react-table";
 import { ActionCell } from "./components/action-cell";
 import { ItemSize } from "./constants";
-import IndexCell from "./components/index-cell";
-import { TableModelSchema } from "./types";
+import { TableModelSchema, type AppsmithColumnMeta } from "./types";
 import type z from "zod";
 
 const CreateColumns = TableModelSchema.omit({
@@ -25,9 +24,10 @@ export function createColumns<TData>({
   if (indexRow?.enable) {
     indexColumns.push({
       id: "#",
-      cell: ({ row }) => (
-        <IndexCell size={indexRow.size || ItemSize.xs} row={row} />
-      ),
+      meta: {
+        size: ItemSize.xs,
+      },
+      cell: ({ row }) => row.index + 1,
     });
   }
 
@@ -49,7 +49,7 @@ export function createColumns<TData>({
           filterVariant: filter ? type : null,
           headerText,
           size,
-        },
+        } as AppsmithColumnMeta,
         cell: (info) => String(info.getValue() ?? ""),
       };
 
@@ -62,6 +62,9 @@ export function createColumns<TData>({
     actionColumns.push({
       id: "actions",
       header: "",
+      meta: {
+        size: ItemSize.xs,
+      },
       cell: ({ row }) => (
         <ActionCell
           size={actionColumn?.size || ItemSize.sm}

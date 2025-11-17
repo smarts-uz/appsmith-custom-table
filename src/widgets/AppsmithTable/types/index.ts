@@ -1,6 +1,7 @@
 import { ColumnType, ItemSize, PinDirection, HTTP_METHODS } from "../constants";
 import z from "zod";
 import * as LucideIcons from "lucide-react";
+import { AppsmithTableStyles } from "./style.types";
 
 const ColumnItemSchema = z.object({
   type: z.enum(ColumnType),
@@ -15,13 +16,19 @@ const ColumnItemSchema = z.object({
     .optional(),
   className: z.string().optional(),
 });
-
+// offset,
 const FetcherSchema = z.object({
   url: z.url({ error: "URL is not provided" }),
   method: z.enum(HTTP_METHODS).default(HTTP_METHODS.GET).optional(),
   headers: z.record(z.string(), z.string()).optional(),
   body: z.any().optional(),
   accessor: z.string().optional(),
+  paginationKeys: z
+    .object({
+      offset: z.string().default("offset"),
+      limit: z.string().default("limit"),
+    })
+    .optional(),
 });
 
 export const IndexRowSchema = z.object({
@@ -69,7 +76,14 @@ export const TableModelSchema = z.object({
   translations: z.record(z.string(), z.string()).optional(),
   updateModel: UpdateModelSchema,
   triggerEvent: TriggerEventSchema,
+  styles: AppsmithTableStyles,
 });
+
+export interface AppsmithColumnMeta {
+  filterVariant: string | null;
+  headerText: string;
+  size: ItemSize;
+}
 
 export type ColumnItem = z.infer<typeof ColumnItemSchema>;
 export type TableModel = z.infer<typeof TableModelSchema>;

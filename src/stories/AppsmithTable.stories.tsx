@@ -1,17 +1,8 @@
 import "../tailwind.css";
 import type { Meta, StoryObj } from "@storybook/react";
 import AppsmithTable from "../widgets/AppsmithTable/AppsmithTable";
-import type { TableModel } from "../widgets/AppsmithTable/types";
-import { PinDirection, ItemSize } from "../widgets/AppsmithTable/constants";
-import { postsSchema, postsRowActions } from "./client-mock";
-
-const defaultProps: TableModel = {
-  fetcher: { url: "https://jsonplaceholder.typicode.com/posts" },
-  schema: postsSchema,
-  rowActions: postsRowActions,
-  actionColumn: { enable: true, pin: PinDirection.right, size: ItemSize.sm },
-  indexRow: { enable: true, size: ItemSize.sm },
-};
+import { ClientSideProps } from "./ClientSide";
+import { StyledTableProps } from "./StyledTable";
 
 // Storybook meta
 const meta: Meta<typeof AppsmithTable> = {
@@ -29,9 +20,17 @@ export default meta;
 type Story = StoryObj<typeof AppsmithTable>;
 
 // Full story
-export const ClienSide: Story = {
+export const ClientSide: Story = {
   args: {
-    ...defaultProps,
+    ...ClientSideProps,
+  },
+  render: (args) => <AppsmithTable {...args} />,
+};
+
+// Full story
+export const ColoredTable: Story = {
+  args: {
+    ...StyledTableProps,
   },
   render: (args) => <AppsmithTable {...args} />,
 };

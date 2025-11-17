@@ -25,6 +25,7 @@ import { validateTableModel } from "./validator/validateTableModal";
 import { Table } from "@/components/ui/table";
 import { InfoCard } from "./components/info-card";
 import { SkeletonTable } from "./components/skeleton-table";
+import { cn } from "@/lib/utils";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -44,6 +45,7 @@ function CustomTable({
   indexRow,
   translations,
   fetcher,
+  styles,
   updateModel = () => {},
   triggerEvent = () => {},
 }: TableModel) {
@@ -58,8 +60,8 @@ function CustomTable({
         headers,
         body,
         accessor,
-        cb: () => {
-          updateModel({ data });
+        cb: (value) => {
+          updateModel({ data: value });
         },
       }),
   });
@@ -154,8 +156,19 @@ function CustomTable({
   }
 
   return (
-    <Card className="max-h-[32rem] overflow-y-scroll">
-      <CardHeader className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
+    <Card
+      className={cn(
+        "max-h-svh lg:max-h-[40rem] overflow-y-scroll gap-4 lg:gap-6",
+        styles?.card?.container
+      )}
+      style={{ ...styles?.variables }}
+    >
+      <CardHeader
+        className={cn(
+          "px-2 lg:px-6 flex flex-wrap items-center gap-2",
+          styles?.card?.header
+        )}
+      >
         {table
           .getHeaderGroups()
           .map((headerGroup) =>
@@ -166,10 +179,15 @@ function CustomTable({
             )
           )}
       </CardHeader>
-      <CardContent>
-        <Table className="w-full min-w-80 table-auto">
-          <TanstackTableHead table={table} />
-          <TanstackTableBody table={table} />
+      <CardContent className={cn("px-2 lg:px-6 ", styles?.card?.content)}>
+        <Table
+          className={cn(
+            "w-full min-w-96 table-auto border-collapse",
+            styles?.table
+          )}
+        >
+          <TanstackTableHead styles={styles?.head} table={table} />
+          <TanstackTableBody styles={styles?.body} table={table} />
         </Table>
       </CardContent>
     </Card>

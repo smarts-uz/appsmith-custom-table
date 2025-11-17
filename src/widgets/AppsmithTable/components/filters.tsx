@@ -1,10 +1,8 @@
 import type { Column } from "@tanstack/react-table";
 import { TableFilterText } from "./filter-text";
-import { TableFilterBoolean } from "./filter-bool";
 import { TableFilterNumber } from "./filter-num";
 import { TableFilterEnum } from "./filter-enum";
 import { ColumnType } from "../constants";
-import { TableFilterId } from "./filter-id";
 
 type TableFiltersProps<TData> = {
   column: Column<TData, any>;
@@ -26,21 +24,6 @@ export function TableFilters<TData>({ column, t }: TableFiltersProps<TData>) {
 
   const renderFilter = () => {
     switch (filterVariant) {
-      case ColumnType.ID:
-        return (
-          <TableFilterId
-            column={column}
-            columnFilterValue={
-              typeof columnFilterValue === "string" ||
-              typeof columnFilterValue === "undefined"
-                ? columnFilterValue
-                : undefined
-            }
-            filterId={filterId}
-            headerText={headerText}
-            t={t}
-          />
-        );
       case ColumnType.TEXT:
         return (
           <TableFilterText
@@ -78,23 +61,6 @@ export function TableFilters<TData>({ column, t }: TableFiltersProps<TData>) {
           <TableFilterEnum
             column={column}
             columnFilterValue={columnFilterValue}
-            filterId={filterId}
-            headerText={headerText}
-            t={t}
-          />
-        );
-      case ColumnType.BOOL:
-        return (
-          <TableFilterBoolean
-            column={column}
-            columnFilterValue={
-              typeof columnFilterValue === "boolean" ||
-              typeof columnFilterValue === "string" ||
-              typeof columnFilterValue === "undefined" ||
-              columnFilterValue === null
-                ? columnFilterValue
-                : undefined
-            }
             filterId={filterId}
             headerText={headerText}
             t={t}

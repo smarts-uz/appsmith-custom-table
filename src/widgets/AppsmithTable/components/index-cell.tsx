@@ -1,9 +1,7 @@
 import type { Row } from "@tanstack/react-table";
-import type { ItemSize } from "../constants";
 
 type IndexCellProps<TData> = {
   row: Row<TData>;
-  size?: ItemSize
 };
 
 const IndexCell = <TData,>({ row }: IndexCellProps<TData>) => {

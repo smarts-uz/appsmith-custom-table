@@ -15,7 +15,7 @@ type ActionCellProps<TData> = {
   row: Row<TData>;
   rowActions: RowAction[];
   triggerEvent: TriggerEvent;
-  size?: ItemSize
+  size?: ItemSize;
 };
 
 // Fallback icon
@@ -39,7 +39,7 @@ export function ActionCell<TData>({
       iconName && LucideIcons[iconName]
         ? (LucideIcons[iconName] as LucideIcon)
         : ICON_FALLBACK;
-    return <Icon className="w-4 h-4" />;
+    return <Icon className="w-5 h-5" />;
   };
 
   if (onlyOne) {
@@ -48,7 +48,7 @@ export function ActionCell<TData>({
       <Button
         variant="ghost"
         size="sm"
-        className="w-full h-full p-2 flex items-center gap-2"
+        className="w-full min-w-6 h-full p-2 flex items-center gap-2"
         onClick={() => handleAction(action.onClick)}
       >
         {renderIcon(action.icon as keyof typeof LucideIcons)}
@@ -58,17 +58,17 @@ export function ActionCell<TData>({
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger>
+      <DropdownMenuTrigger className="min-w-8 mx-auto">
         <Button variant="ghost" asChild size="sm" className="w-full h-full p-2">
           <LucideIcons.MoreHorizontal className="w-4 h-4" />
         </Button>
       </DropdownMenuTrigger>
 
-      <DropdownMenuContent align="end" className="w-56">
+      <DropdownMenuContent align="end" className="w-64">
         {rowActions.map((action, i) => (
           <DropdownMenuItem
             key={i}
-            className="flex items-center gap-2"
+            className="flex items-center gap-2 text-base font-semibold"
             onClick={() => handleAction(action.onClick)}
           >
             {renderIcon(action.icon as keyof typeof LucideIcons)}

@@ -22,8 +22,6 @@ export enum ColumnType {
   TEXT = "text",
   NUMBER = "number",
   ENUM = "enum",
-  BOOL = "bool",
-  ID = "id",
   DATE = "date",
   CURRENCY = "currency",
   PHONE = "phone",
