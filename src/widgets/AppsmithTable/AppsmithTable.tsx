@@ -15,7 +15,6 @@ import {
   QueryClient,
   QueryClientProvider,
 } from "@tanstack/react-query";
-import { Toaster } from "sonner";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { fetcherFN } from "./lib/fetcherFN";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
@@ -182,7 +181,6 @@ function AppsmithTable(props: TableModel) {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <Toaster position="bottom-center" />
       <ReactQueryDevtools initialIsOpen={false} />
       {validation.success ? (
         <CustomTable {...props} />
