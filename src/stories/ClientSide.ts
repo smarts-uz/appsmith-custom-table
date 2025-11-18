@@ -8,27 +8,27 @@ import { ItemSize, ColumnType } from "../widgets/AppsmithTable/constants";
 import { PinDirection } from "../widgets/AppsmithTable/constants";
 
 const postsSchema: Schema = {
-  userId: {
-    type: ColumnType.NUMBER,
-    title: "User ID",
-    sort: true,
-    filter: true,
-  },
   id: {
     type: ColumnType.TEXT,
-    title: "Post ID",
+    title: "ID",
     sort: true,
     filter: true,
   },
-  title: {
-    type: ColumnType.TEXT,
-    title: "Title",
+  age: {
+    type: ColumnType.NUMBER,
+    title: "Age",
     sort: true,
     filter: true,
   },
-  body: {
+  username: {
     type: ColumnType.TEXT,
-    title: "Body",
+    title: "Name",
+    sort: true,
+    filter: true,
+  },
+  university: {
+    type: ColumnType.TEXT,
+    title: "University",
     sort: false,
     filter: true,
   },
@@ -41,7 +41,11 @@ const postsRowActions: RowAction[] = [
 ];
 
 export const ClientSideProps: TableModel = {
-  fetcher: { url: "https://jsonplaceholder.typicode.com/posts" },
+  fetcher: {
+    url: "https://dummyjson.com/users",
+    accessor: "users",
+    paginationKeys: { offset: "skip", limit: "limit" },
+  },
   schema: postsSchema,
   rowActions: postsRowActions,
   actionColumn: { enable: true, pin: PinDirection.right, size: ItemSize.sm },

@@ -32,12 +32,19 @@ export const postsSchema: Schema = {
     filter: true,
     size: ItemSize.md,
   },
-  completed: {
+  body: {
     type: ColumnType.TEXT,
-    title: "Completed",
+    title: "Body",
     sort: true,
     filter: true,
     size: ItemSize.lg,
+  },
+  views: {
+    type: ColumnType.NUMBER,
+    title: "Views",
+    sort: true,
+    filter: true,
+    size: ItemSize.md,
   },
 };
 
@@ -83,7 +90,7 @@ export const tableStyles: AppsmithTableStyles = {
 };
 
 export const StyledTableProps: TableModel = {
-  fetcher: { url: "https://jsonplaceholder.typicode.com/todos" },
+  fetcher: { url: "https://dummyjson.com/posts", accessor: "posts" },
   schema: postsSchema,
   rowActions: postsRowActions,
   actionColumn: { enable: true, pin: PinDirection.right, size: ItemSize.sm },

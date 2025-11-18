@@ -16,7 +16,7 @@ const ColumnItemSchema = z.object({
     .optional(),
   className: z.string().optional(),
 });
-// offset,
+
 const FetcherSchema = z.object({
   url: z.url({ error: "URL is not provided" }),
   method: z.enum(HTTP_METHODS).default(HTTP_METHODS.GET).optional(),
@@ -29,6 +29,8 @@ const FetcherSchema = z.object({
       limit: z.string().default("limit"),
     })
     .optional(),
+  perPage: z.number().default(20).optional(),
+  pageParam: z.number().default(0).optional()
 });
 
 export const IndexRowSchema = z.object({

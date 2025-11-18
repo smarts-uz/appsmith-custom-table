@@ -11,8 +11,8 @@ import { createColumns } from "./createColumns";
 import { TableFilters } from "./components/filters";
 import { getT } from "./lib/getT";
 import {
-  useQuery,
   QueryClient,
+  useInfiniteQuery,
   QueryClientProvider,
 } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
@@ -20,7 +20,7 @@ import { fetcherFN } from "./lib/fetcherFN";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { defaultTranslations } from "./lib/translations";
 import type { TableModel } from "./types";
-import { HTTP_METHODS, PinDirection } from "./constants";
+import { PAGE_PARAM, PER_PAGE, PinDirection } from "./constants";
 import { validateTableModel } from "./validator/validateTableModal";
 import { Table } from "@/components/ui/table";
 import { InfoCard } from "./components/info-card";
@@ -49,23 +49,47 @@ function CustomTable({
   updateModel = () => {},
   triggerEvent = () => {},
 }: TableModel) {
-  const { url, method, headers, body, accessor } = fetcher;
+  const {
+    url,
+    method,
+    headers,
+    body,
+    accessor,
+    perPage = PER_PAGE,
+    pageParam = PAGE_PARAM,
+    paginationKeys,
+  } = fetcher;
 
-  const { data = [], isLoading } = useQuery({
-    queryKey: ["data"],
-    queryFn: () =>
+  const {
+    data: infiniteData,
+    error,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isLoading,
+    isError,
+  } = useInfiniteQuery({
+    queryKey: [url],
+    initialPageParam: pageParam ?? 0,
+    queryFn: ({ pageParam }: { pageParam: number }) =>
       fetcherFN({
         url,
-        method: method || HTTP_METHODS.GET,
+        method,
         headers,
         body,
         accessor,
-        cb: (value) => {
-          updateModel({ data: value });
-        },
+        cb: (value) => updateModel({ data: value }),
+        paginationKeys,
+        perPage,
+        pageParam,
       }),
+    getNextPageParam: (lastPage: any, allPages: any) => {
+      if (lastPage.length < perPage) return undefined;
+      return (allPages.length ?? 0) * perPage;
+    },
   });
 
+  const data = infiniteData?.pages.flat() ?? [];
   const [rowSelection, setRowSelection] = React.useState({});
   const [rowPinning, setRowPinning] = React.useState({});
   const [columnFilters] = React.useState([]);
@@ -157,6 +181,10 @@ function CustomTable({
     return <InfoCard message={t("noData")} variant="info" />;
   }
 
+  if (isError) {
+    return <InfoCard message={error.message} variant="error" />;
+  }
+
   return (
     <Card
       className={cn(
@@ -191,6 +219,15 @@ function CustomTable({
           <TanstackTableHead styles={styles?.head} table={table} />
           <TanstackTableBody styles={styles?.body} table={table} />
         </Table>
+        {hasNextPage && (
+          <button
+            onClick={() => fetchNextPage()}
+            disabled={isFetchingNextPage}
+            className="px-4 py-2 bg-blue-600 max-w-64 block justify-center mx-auto text-white rounded-lg shadow-md hover:bg-blue-700 disabled:opacity-50"
+          >
+            {isFetchingNextPage ? "Loading more..." : "Load More"}
+          </button>
+        )}
       </CardContent>
     </Card>
   );

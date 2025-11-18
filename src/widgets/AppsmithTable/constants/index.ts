@@ -26,3 +26,6 @@ export enum ColumnType {
   CURRENCY = "currency",
   PHONE = "phone",
 }
+
+export const PER_PAGE = 20
+export const PAGE_PARAM = 0

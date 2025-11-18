@@ -26,7 +26,6 @@ export function createColumns<TData>({
   if (indexRow?.enable) {
     indexColumns.push({
       id: "#",
-      header: "#",
       meta: {
         size: ItemSize.xs,
       },
