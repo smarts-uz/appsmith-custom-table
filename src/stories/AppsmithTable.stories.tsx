@@ -1,12 +1,12 @@
 import "../tailwind.css";
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import ClientTable from "../widgets/ClientTable/ClientTable";
 import { ClientSideProps } from "./ClientSide";
 import { StyledTableProps } from "./StyledTable";
 
 // Storybook meta
 const meta: Meta<typeof ClientTable> = {
-  title: "Infinite Table",
+  title: "Appsmith Table",
   component: ClientTable,
   tags: ["autodocs"],
   parameters: { deepControls: { enabled: false } },

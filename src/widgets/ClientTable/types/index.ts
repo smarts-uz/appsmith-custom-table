@@ -89,8 +89,6 @@ export const TableModelSchema = z.object({
   styles: AppsmithTableStyles,
   triggerEvent: TriggerEventSchema,
   updateModel: UpdateModelSchema,
-  page: z.number(),
-  setPage: z.function({ input: [z.number()] }),
 });
 
 export interface AppsmithColumnMeta {

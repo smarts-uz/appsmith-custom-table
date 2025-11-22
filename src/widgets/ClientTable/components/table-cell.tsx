@@ -9,9 +9,12 @@ interface TableCellHoverProps {
 }
 
 export const TableCell: React.FC<TableCellHoverProps> = ({ value }) => {
-  console.log("val", value);
   const displayValue =
     typeof value === "object" ? JSON.stringify(value) : String(value);
+
+  if (value === null) {
+    return <></>;
+  }
 
   return (
     <HoverCard>

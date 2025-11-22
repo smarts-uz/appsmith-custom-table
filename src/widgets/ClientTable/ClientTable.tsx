@@ -20,8 +20,6 @@ import { PER_PAGE } from "./constants";
 
 function ClientTable(props: TableModel) {
   const {
-    page,
-    setPage,
     schema,
     rowActions,
     rowSelectionAction,
@@ -37,7 +35,7 @@ function ClientTable(props: TableModel) {
   const validation = validateTableModel(props);
   const [rowSelection, setRowSelection] = React.useState({});
   const [rowPinning, setRowPinning] = React.useState({});
-
+  const [page, setPage] = React.useState(1);
   const t = React.useCallback(getT(translations, defaultTranslations), [
     translations,
   ]);
@@ -112,15 +110,9 @@ function ClientTable(props: TableModel) {
   }, [rowSelection, rowSelectionAction, table]);
 
   const handleClick = () => {
-    setPage(page + 1);
+    setPage((prev: number) => prev + 1);
     triggerEvent("onLoadMore", { page, limit });
   };
-
-  // const handleSort = (sortCol: string, sortOption = "ASC") => {
-  //   setSorting('asd')
-  //   setPage(1);
-  //   triggerEvent("onSort", { sortCol, sortOption, limit });
-  // };
 
   if (data?.length === 0) {
     return <InfoCard message={t("noData")} variant="info" />;
@@ -142,7 +134,7 @@ function ClientTable(props: TableModel) {
   return (
     <main
       className={cn(
-        "max-h-svh lg:max-h-[40rem] xl:max-h-[48rem] overflow-y-scroll gap-4 lg:gap-6",
+        "max-h-svh lg:max-h-[40rem] xl:max-h-[48rem] overflow-y-scroll",
         styles?.container
       )}
       style={{ ...styles?.variables }}
@@ -157,7 +149,7 @@ function ClientTable(props: TableModel) {
         <TanstackTableBody styles={styles?.body} table={table} />
       </Table>
 
-      <Button onClick={handleClick} className="mt-2">
+      <Button onClick={handleClick} className="mt-2" variant="outline">
         Load More
       </Button>
     </main>
