@@ -1,4 +1,5 @@
 import React from "react";
+import { useInView } from "react-intersection-observer";
 import {
   useReactTable,
   getCoreRowModel,
@@ -7,8 +8,6 @@ import {
 import TanstackTableBody from "@/components/tanstack-table/body";
 import TanstackTableHead from "@/components/tanstack-table/head";
 import { createColumns } from "./createColumns";
-import { getT } from "./lib/getT";
-import { defaultTranslations } from "./lib/translations";
 import type { TableModel } from "./types";
 import { PinDirection } from "./constants";
 import { validateTableModel } from "./validator/validateTableModal";
@@ -25,7 +24,6 @@ function ClientTable(props: TableModel) {
     rowSelectionAction,
     actionColumn,
     indexRow,
-    translations,
     data,
     styles,
     limit = PER_PAGE,
@@ -37,15 +35,9 @@ function ClientTable(props: TableModel) {
   const [rowSelection, setRowSelection] = React.useState({});
   const [rowPinning, setRowPinning] = React.useState({});
   const [page, setPage] = React.useState(1);
-  const [hasMore, setHasMore] = React.useState(true);
-
-  const loaderRef = React.useRef<HTMLDivElement>(null);
+  const [hasMore] = React.useState(true);
   const isLoadingRef = React.useRef(false);
-
-  const t = React.useCallback(getT(translations, defaultTranslations), [
-    translations,
-  ]);
-
+  console.log(page);
   const [sorting] = React.useState([]);
 
   const getInitialPinning = React.useCallback(() => {
@@ -116,41 +108,36 @@ function ClientTable(props: TableModel) {
     }
   }, [rowSelection, rowSelectionAction, table]);
 
-  // Infinite scroll using IntersectionObserver
+  // IntersectionObserver hook
+  const { ref: loaderRef, inView } = useInView({
+    threshold: 1,
+    triggerOnce: false,
+  });
+
+  // Trigger loading next page when sentinel comes into view
   React.useEffect(() => {
-    if (!loaderRef.current || !hasMore) return;
+    if (inView && hasMore && !isLoadingRef.current) {
+      isLoadingRef.current = true;
+      setPage((prev) => {
+        const next = prev + 1;
+        triggerEvent("onLoadMore", { page: next, limit });
+        return next;
+      });
+    }
+  }, [inView, hasMore, triggerEvent, limit]);
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const entry = entries[0];
-        if (entry.isIntersecting && !isLoadingRef.current) {
-          isLoadingRef.current = true;
-          setPage((prev) => {
-            const next = prev + 1;
-            triggerEvent("onLoadMore", { page: next, limit });
-            return next;
-          });
-        }
-      },
-      { threshold: 1 }
-    );
-
-    observer.observe(loaderRef.current);
-    return () => observer.disconnect();
-  }, [hasMore, triggerEvent, limit]);
-
-  // Reset loading state and determine if more data exists
+  // Update hasMore flag based on returned data
+  // React.useEffect(() => {
+  //   if (data.length < page * limit) {
+  //     setHasMore(false);
+  //   }
+  // }, [data, page, limit]);
   React.useEffect(() => {
     isLoadingRef.current = false;
-
-    // If last page fetched fewer rows than expected, stop further loading
-    if (data.length < page * limit) {
-      setHasMore(false);
-    }
-  }, [data, page, limit]);
+  }, [data]);
 
   if (data?.length === 0) {
-    return <InfoCard message={t("noData")} variant="info" />;
+    return <InfoCard message={"noData"} variant="info" />;
   }
 
   if (!validation.success) {
@@ -169,7 +156,7 @@ function ClientTable(props: TableModel) {
   return (
     <main
       className={cn(
-        "max-h-svh lg:max-h-[40rem] border-border xl:max-h-[48rem] relative flex flex-col gap-2",
+        "max-h-svh lg:max-h-[40rem] border-border xl:max-h-[48rem] relative flex flex-col gap-2 overflow-y-auto",
         styles?.container
       )}
       style={{ ...styles?.variables }}
@@ -181,15 +168,17 @@ function ClientTable(props: TableModel) {
         )}
       >
         <TanstackTableHead styles={styles?.head} table={table} />
-        <TanstackTableBody styles={styles?.body} table={table} />
+        <TanstackTableBody styles={styles?.body} table={table}>
+          {hasMore && (
+            <div
+              ref={loaderRef}
+              className="h-10 flex items-center justify-center text-muted-foreground"
+            >
+              <Loader className="animate-spin size-4" />
+            </div>
+          )}
+        </TanstackTableBody>
       </Table>
-
-      {/* Sentinel element for IntersectionObserver */}
-      {hasMore && (
-        <div ref={loaderRef} className="h-8 flex items-center justify-center ">
-          <Loader className="animate-spin text-muted-foreground" />
-        </div>
-      )}
     </main>
   );
 }

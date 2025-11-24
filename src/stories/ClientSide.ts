@@ -43,6 +43,7 @@ const postsRowActions: RowAction[] = [
 
 export const ClientSideProps: TableModel = {
   data,
+  limit: 40,
   schema: postsSchema,
   rowActions: postsRowActions,
   actionColumn: { enable: true, pin: PinDirection.right, size: ItemSize.sm },

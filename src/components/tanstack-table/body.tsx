@@ -9,6 +9,7 @@ import type { AppsmithColumnMeta } from "@/widgets/ClientTable/types";
 type BodyProps<TData extends RowData> = {
   table: Table<TData>;
   styles?: TableBodyStyles;
+  children: React.ReactNode;
 };
 
 export const sizeClasses: Record<ItemSize, string> = {
@@ -21,6 +22,7 @@ export const sizeClasses: Record<ItemSize, string> = {
 function TanstackTableBody<TData extends RowData>({
   table,
   styles,
+  children,
 }: BodyProps<TData>) {
   return (
     <TableBody className={styles?.body}>
@@ -50,6 +52,7 @@ function TanstackTableBody<TData extends RowData>({
           })}
         </TableRow>
       ))}
+      {children}
     </TableBody>
   );
 }
