@@ -8,7 +8,7 @@ interface TableCellHoverProps {
   value: unknown;
 }
 
-export const TableCell: React.FC<TableCellHoverProps> = ({ value }) => {
+const TableBodyCell: React.FC<TableCellHoverProps> = ({ value }) => {
   const displayValue =
     typeof value === "object" ? JSON.stringify(value) : String(value);
 
@@ -27,3 +27,4 @@ export const TableCell: React.FC<TableCellHoverProps> = ({ value }) => {
     </HoverCard>
   );
 };
+export default TableBodyCell;

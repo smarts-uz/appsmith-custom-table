@@ -3,8 +3,8 @@ import { ActionCell } from "./components/action-cell";
 import { ItemSize } from "./constants";
 import { TableModelSchema, type AppsmithColumnMeta } from "./types";
 import type z from "zod";
-import TableHeader from "./components/table-header";
-import { TableCell } from "./components/table-cell";
+import TableHeaderCell from "./components/table-header-cell";
+import TableBodyCell from "./components/table-body-cell";
 
 const CreateColumns = TableModelSchema.omit({
   translations: true,
@@ -43,14 +43,14 @@ export function createColumns<TData>({
       const colDef: ColumnDef<TData> = {
         accessorKey: colKey,
         header: ({ column }) => (
-          <TableHeader column={column} title={headerText} />
+          <TableHeaderCell column={column} title={headerText} />
         ),
         enableSorting: sort,
         meta: {
           headerText,
           size,
         } as AppsmithColumnMeta,
-        cell: (info) => <TableCell value={info.getValue()} />,
+        cell: (info) => <TableBodyCell value={info.getValue()} />,
       };
 
       return colDef;

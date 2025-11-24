@@ -134,7 +134,7 @@ function ClientTable(props: TableModel) {
   return (
     <main
       className={cn(
-        "max-h-svh lg:max-h-[40rem] xl:max-h-[48rem] overflow-y-scroll",
+        "max-h-svh lg:max-h-[40rem] border-border xl:max-h-[48rem] overflow-y-scroll relative flex flex-col gap-2",
         styles?.container
       )}
       style={{ ...styles?.variables }}
@@ -149,7 +149,7 @@ function ClientTable(props: TableModel) {
         <TanstackTableBody styles={styles?.body} table={table} />
       </Table>
 
-      <Button onClick={handleClick} className="mt-2" variant="outline">
+      <Button onClick={handleClick} className="self-center" variant="outline">
         Load More
       </Button>
     </main>

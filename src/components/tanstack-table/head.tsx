@@ -11,7 +11,12 @@ interface HeadProps<TData> {
 
 const TanstackTableHead = <TData,>({ table, styles }: HeadProps<TData>) => {
   return (
-    <TableHeader className={styles?.body}>
+    <TableHeader
+      className={cn(
+        "top-0 sticky bg-card outline-border border-b outline",
+        styles?.body
+      )}
+    >
       {table.getHeaderGroups().map((headerGroup) => (
         <TableRow key={headerGroup.id} className={styles?.row}>
           {headerGroup.headers.map((header) => (
@@ -33,4 +38,5 @@ const TanstackTableHead = <TData,>({ table, styles }: HeadProps<TData>) => {
     </TableHeader>
   );
 };
+
 export default TanstackTableHead;
