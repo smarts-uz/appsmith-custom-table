@@ -157,7 +157,8 @@ function ClientTable(props: TableModel) {
             <InView
               triggerOnce={false}
               as="div"
-              threshold={1}
+              threshold={0}
+              rootMargin="200px 0px"
               onChange={(inView, entry) => handleLoadMore(inView, entry)}
               colSpan={table.getVisibleLeafColumns().length}
               className="h-10 text-muted-foreground flex justify-center items-center"
