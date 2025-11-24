@@ -15,8 +15,8 @@ import { validateTableModel } from "./validator/validateTableModal";
 import { Table } from "@/components/ui/table";
 import { InfoCard } from "./components/info-card";
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
 import { PER_PAGE } from "./constants";
+import { Loader } from "lucide-react";
 
 function ClientTable(props: TableModel) {
   const {
@@ -32,13 +32,20 @@ function ClientTable(props: TableModel) {
     updateModel = () => {},
     triggerEvent = () => {},
   } = props;
+
   const validation = validateTableModel(props);
   const [rowSelection, setRowSelection] = React.useState({});
   const [rowPinning, setRowPinning] = React.useState({});
   const [page, setPage] = React.useState(1);
+  const [hasMore, setHasMore] = React.useState(true);
+
+  const loaderRef = React.useRef<HTMLDivElement>(null);
+  const isLoadingRef = React.useRef(false);
+
   const t = React.useCallback(getT(translations, defaultTranslations), [
     translations,
   ]);
+
   const [sorting] = React.useState([]);
 
   const getInitialPinning = React.useCallback(() => {
@@ -89,6 +96,7 @@ function ClientTable(props: TableModel) {
     manualSorting: true,
   });
 
+  // Handle row selection
   React.useEffect(() => {
     const selectedRowId = Object.keys(rowSelection)[0];
 
@@ -98,7 +106,6 @@ function ClientTable(props: TableModel) {
     }
 
     const selectedRow = table.getRow(selectedRowId);
-
     if (selectedRow) {
       updateModel({ selectedRow: selectedRow.original });
       if (rowSelectionAction) {
@@ -109,10 +116,38 @@ function ClientTable(props: TableModel) {
     }
   }, [rowSelection, rowSelectionAction, table]);
 
-  const handleClick = () => {
-    setPage((prev: number) => prev + 1);
-    triggerEvent("onLoadMore", { page, limit });
-  };
+  // Infinite scroll using IntersectionObserver
+  React.useEffect(() => {
+    if (!loaderRef.current || !hasMore) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+        if (entry.isIntersecting && !isLoadingRef.current) {
+          isLoadingRef.current = true;
+          setPage((prev) => {
+            const next = prev + 1;
+            triggerEvent("onLoadMore", { page: next, limit });
+            return next;
+          });
+        }
+      },
+      { threshold: 1 }
+    );
+
+    observer.observe(loaderRef.current);
+    return () => observer.disconnect();
+  }, [hasMore, triggerEvent, limit]);
+
+  // Reset loading state and determine if more data exists
+  React.useEffect(() => {
+    isLoadingRef.current = false;
+
+    // If last page fetched fewer rows than expected, stop further loading
+    if (data.length < page * limit) {
+      setHasMore(false);
+    }
+  }, [data, page, limit]);
 
   if (data?.length === 0) {
     return <InfoCard message={t("noData")} variant="info" />;
@@ -134,7 +169,7 @@ function ClientTable(props: TableModel) {
   return (
     <main
       className={cn(
-        "max-h-svh lg:max-h-[40rem] border-border xl:max-h-[48rem] overflow-y-scroll relative flex flex-col gap-2",
+        "max-h-svh lg:max-h-[40rem] border-border xl:max-h-[48rem] relative flex flex-col gap-2",
         styles?.container
       )}
       style={{ ...styles?.variables }}
@@ -149,9 +184,12 @@ function ClientTable(props: TableModel) {
         <TanstackTableBody styles={styles?.body} table={table} />
       </Table>
 
-      <Button onClick={handleClick} className="self-center" variant="outline">
-        Load More
-      </Button>
+      {/* Sentinel element for IntersectionObserver */}
+      {hasMore && (
+        <div ref={loaderRef} className="h-8 flex items-center justify-center ">
+          <Loader className="animate-spin text-muted-foreground" />
+        </div>
+      )}
     </main>
   );
 }
