@@ -6,7 +6,7 @@ import type {
 } from "../widgets/ClientTable/types";
 import { ItemSize } from "../widgets/ClientTable/constants";
 import { PinDirection } from "../widgets/ClientTable/constants";
-import data from "./data-1.json";
+import { faker } from "@faker-js/faker";
 
 const postsSchema: Schema = {
   id: {
@@ -41,11 +41,27 @@ const postsRowActions: RowAction[] = [
   { title: "Tolov", onClick: "onClick" },
 ];
 
+export const generateData = (count: number) => {
+  return Array.from({ length: count }).map(() => ({
+    id: faker.number.int(),
+    name: faker.person.fullName(),
+    email: faker.internet.email(),
+    phone: faker.phone.number(),
+    agent: faker.internet.userAgent(),
+  }));
+};
+
 export const ClientSideProps: TableModel = {
-  data,
-  limit: 40,
+  data: generateData(10),
+  limit: 10,
+  max_count: 400,
   schema: postsSchema,
   rowActions: postsRowActions,
   actionColumn: { enable: true, pin: PinDirection.right, size: ItemSize.sm },
   indexRow: { enable: true, size: ItemSize.sm },
+  triggerEvent: (event: string, data: any) => {
+    if (event === "onLoadMore") {
+      console.log(data);
+    }
+  },
 };

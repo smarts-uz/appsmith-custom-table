@@ -6,7 +6,6 @@ import type {
 } from "../widgets/ClientTable/types";
 import { ItemSize, PinDirection } from "../widgets/ClientTable/constants";
 import type { AppsmithTableStyles } from "@/widgets/ClientTable/types/index";
-import data from "./data-1.json";
 
 export const postsSchema: Schema = {
   id: {
@@ -73,7 +72,8 @@ export const tableStyles: AppsmithTableStyles = {
 };
 
 export const StyledTableProps: TableModel = {
-  data,
+  data: [],
+  max_count: 100,
   schema: postsSchema,
   rowActions: postsRowActions,
   actionColumn: { enable: true, pin: PinDirection.right, size: ItemSize.sm },

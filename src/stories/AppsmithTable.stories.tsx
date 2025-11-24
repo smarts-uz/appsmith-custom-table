@@ -1,7 +1,8 @@
 import "../tailwind.css";
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { useState, useEffect } from "react";
 import ClientTable from "../widgets/ClientTable/ClientTable";
-import { ClientSideProps } from "./ClientSide";
+import { ClientSideProps, generateData } from "./ClientSide";
 import { StyledTableProps } from "./StyledTable";
 
 // Storybook meta
@@ -24,7 +25,23 @@ export const ClientSide: Story = {
   args: {
     ...ClientSideProps,
   },
-  render: (args) => <ClientTable {...args} />,
+  render: function Render(args) {
+    const [data, setData] = useState(args.data);
+
+    useEffect(() => {
+      setData(args.data);
+    }, [args.data]);
+
+    const onTriggerEvent = (event: string, payload: any) => {
+      if (event === "onLoadMore") {
+        const newData = generateData(payload.limit || 10);
+        setData((prev) => [...(prev || []), ...newData]);
+      }
+      args.triggerEvent?.(event, payload);
+    };
+
+    return <ClientTable {...args} data={data} triggerEvent={onTriggerEvent} />;
+  },
 };
 
 // Full story

@@ -1,5 +1,5 @@
 import React from "react";
-import { useInView } from "react-intersection-observer";
+import { InView } from "react-intersection-observer";
 import {
   useReactTable,
   getCoreRowModel,
@@ -25,6 +25,7 @@ function ClientTable(props: TableModel) {
     actionColumn,
     indexRow,
     data,
+    max_count,
     styles,
     limit = PER_PAGE,
     updateModel = () => {},
@@ -35,8 +36,7 @@ function ClientTable(props: TableModel) {
   const [rowSelection, setRowSelection] = React.useState({});
   const [rowPinning, setRowPinning] = React.useState({});
   const [page, setPage] = React.useState(1);
-  const [hasMore] = React.useState(true);
-  const isLoadingRef = React.useRef(false);
+  const [hasMore, setHasMore] = React.useState(true);
   console.log(page);
   const [sorting] = React.useState([]);
 
@@ -108,37 +108,21 @@ function ClientTable(props: TableModel) {
     }
   }, [rowSelection, rowSelectionAction, table]);
 
-  // IntersectionObserver hook
-  const { ref: loaderRef, inView } = useInView({
-    threshold: 1,
-    triggerOnce: false,
-  });
+  const handleLoadMore = (
+    inView: boolean,
+    entry: IntersectionObserverEntry
+  ) => {
+    if (!inView || !hasMore || !entry.isIntersecting) return;
+    const next = page + 1;
+    setPage(next);
+    triggerEvent("onLoadMore", { page: next, limit });
+  };
 
-  // Trigger loading next page when sentinel comes into view
   React.useEffect(() => {
-    if (inView && hasMore && !isLoadingRef.current) {
-      isLoadingRef.current = true;
-      setPage((prev) => {
-        const next = prev + 1;
-        triggerEvent("onLoadMore", { page: next, limit });
-        return next;
-      });
+    if (page * limit >= max_count) {
+      setHasMore(false);
     }
-  }, [inView, hasMore, triggerEvent, limit]);
-
-  // Update hasMore flag based on returned data
-  // React.useEffect(() => {
-  //   if (data.length < page * limit) {
-  //     setHasMore(false);
-  //   }
-  // }, [data, page, limit]);
-  React.useEffect(() => {
-    isLoadingRef.current = false;
-  }, [data]);
-
-  if (data?.length === 0) {
-    return <InfoCard message={"noData"} variant="info" />;
-  }
+  }, [page, limit, max_count]);
 
   if (!validation.success) {
     return (
@@ -170,12 +154,16 @@ function ClientTable(props: TableModel) {
         <TanstackTableHead styles={styles?.head} table={table} />
         <TanstackTableBody styles={styles?.body} table={table}>
           {hasMore && (
-            <div
-              ref={loaderRef}
-              className="h-10 flex items-center justify-center text-muted-foreground"
+            <InView
+              triggerOnce={false}
+              as="div"
+              threshold={1}
+              onChange={(inView, entry) => handleLoadMore(inView, entry)}
+              colSpan={table.getVisibleLeafColumns().length}
+              className="h-10 text-muted-foreground flex justify-center items-center"
             >
-              <Loader className="animate-spin size-4" />
-            </div>
+              <Loader className="animate-spin" />
+            </InView>
           )}
         </TanstackTableBody>
       </Table>

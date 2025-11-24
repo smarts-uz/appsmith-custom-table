@@ -80,6 +80,7 @@ export const UpdateModelSchema = z
 export const TableModelSchema = z.object({
   data: z.array(z.any()).default([]),
   limit: z.number().default(PER_PAGE).optional(),
+  max_count: z.number(),
   schema: TableSchema,
   indexRow: IndexRowSchema.optional(),
   rowActions: z.array(RowActionSchema).optional(),
