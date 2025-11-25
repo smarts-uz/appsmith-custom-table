@@ -25,7 +25,7 @@ function TanstackTableBody<TData extends RowData>({
       {table.getRowModel().rows.map((row) => (
         <TableRow
           key={row.id}
-          className={cn("even:bg-foreground/5", styles?.row)}
+          className={cn("odd:bg-background even:bg-secondary", styles?.row)}
         >
           {row.getVisibleCells().map((cell) => (
             <TableCell

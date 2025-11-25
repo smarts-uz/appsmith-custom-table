@@ -153,7 +153,7 @@ function ClientTable(props: TableModel) {
   return (
     <main
       className={cn(
-        "max-h-[36rem] lg:max-h-[40rem] border-border xl:max-h-[48rem] flex flex-col gap-2 overflow-auto font-sans relative",
+        "max-h-[36rem] lg:max-h-[40rem] border-border xl:max-h-[48rem] flex flex-col gap-2 overflow-auto font-sans relative pb-2",
         styles?.container
       )}
       style={{ ...styles?.variables }}
@@ -174,10 +174,9 @@ function ClientTable(props: TableModel) {
           threshold={0}
           rootMargin="200px 0px"
           onChange={(inView, entry) => handleLoadMore(inView, entry)}
-          colSpan={table.getVisibleLeafColumns().length}
-          className="h-10 text-muted-foreground flex justify-center items-center"
+          className="h-10 text-muted-foreground relative flex justify-center items-center"
         >
-          <Loader className="animate-spin" />
+          <Loader className="animate-spin " />
         </InView>
       )}
     </main>

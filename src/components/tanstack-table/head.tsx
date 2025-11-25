@@ -33,7 +33,7 @@ const TanstackTableHead = <TData,>({ table, styles }: HeadProps<TData>) => {
               className={cn(
                 "whitespace-normal break-words text-center border p-1 md:text-start min-w-8 md:px-2",
                 header.column.getCanSort() && "cursor-pointer",
-                getCommonPinningClasses(header.column),
+                getCommonPinningClasses(header.column, "bg-card"),
                 sizeClasses[
                   (header.column.columnDef.meta as AppsmithColumnMeta)?.size ||
                     ItemSize.md

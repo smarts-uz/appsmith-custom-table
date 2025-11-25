@@ -21,8 +21,11 @@ export const getCommonPinningStyles = (column: any): CSSProperties => ({
   width: column.getSize(),
 });
 
-export const getCommonPinningClasses = (column: any) => {
+export const getCommonPinningClasses = (column: any, className?: string) => {
   const isPinned = column.getIsPinned();
 
-  return cn(isPinned && "sticky z-10 bg-card max-w-12 outline outline-border");
+  return cn(
+    isPinned && "sticky z-10 bg-inherit max-w-12 outline outline-border",
+    className
+  );
 };
