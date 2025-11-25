@@ -11,7 +11,7 @@ import TanstackTableHead from "@/components/tanstack-table/head";
 import { createColumns } from "./createColumns";
 import type { TableModel } from "./types";
 import { PinDirection } from "./constants";
-import { validateTableModel } from "./validator/validateTableModal";
+import { validateTableModel } from "./lib/validateTableModal";
 import { Table } from "@/components/ui/table";
 import { InfoCard } from "./components/info-card";
 import { cn } from "@/lib/utils";
@@ -129,7 +129,7 @@ function ClientTable(props: TableModel) {
   }, [rowSelection, rowSelectionAction, table]);
 
   React.useEffect(() => {
-    if (page * limit > max_count) {
+    if (page * limit >= max_count) {
       setHasMore(false);
     }
   }, [page, limit, max_count]);

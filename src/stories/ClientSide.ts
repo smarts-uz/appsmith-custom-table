@@ -1,11 +1,7 @@
 import "../tailwind.css";
-import type {
-  RowAction,
-  Schema,
-  TableModel,
-} from "../widgets/ClientTable/types";
-import { ItemSize } from "../widgets/ClientTable/constants";
-import { PinDirection } from "../widgets/ClientTable/constants";
+import type { RowAction, Schema, TableModel } from "../types";
+import { ItemSize } from "../constants";
+import { PinDirection } from "../constants";
 import { faker } from "@faker-js/faker";
 
 const postsSchema: Schema = {

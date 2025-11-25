@@ -1,11 +1,7 @@
 import "../tailwind.css";
-import type {
-  RowAction,
-  Schema,
-  TableModel,
-} from "../widgets/ClientTable/types";
-import { ItemSize, PinDirection } from "../widgets/ClientTable/constants";
-import type { AppsmithTableStyles } from "@/widgets/ClientTable/types/index";
+import type { RowAction, Schema, TableModel } from "../types";
+import { ItemSize, PinDirection } from "../constants";
+import type { AppsmithTableStyles } from "@/types/index";
 
 export const postsSchema: Schema = {
   id: {

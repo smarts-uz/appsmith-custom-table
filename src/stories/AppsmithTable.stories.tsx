@@ -1,6 +1,6 @@
 import "../tailwind.css";
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import ClientTable from "../widgets/ClientTable/ClientTable";
+import ClientTable from "../ClientTable";
 import { ClientSideProps } from "./ClientSide";
 import { StyledTableProps } from "./StyledTable";
 import { useState, useEffect } from "react";
