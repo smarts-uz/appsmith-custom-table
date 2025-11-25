@@ -20,15 +20,16 @@ type CreateColumnsProps = z.infer<typeof CreateColumns>;
 
 export function createColumns<TData>({
   schema,
-  indexRow,
+  indexColumn,
   rowActions = [],
   actionColumn,
   triggerEvent,
 }: CreateColumnsProps): ColumnDef<TData>[] {
   const indexColumns: ColumnDef<TData>[] = [];
-  if (indexRow?.enable) {
+  if (indexColumn?.enable) {
     indexColumns.push({
-      id: "#",
+      id: "index",
+      header: "",
       meta: {
         size: ItemSize.xs,
       },
@@ -68,7 +69,7 @@ export function createColumns<TData>({
       },
       cell: ({ row }) => (
         <ActionCell
-          size={actionColumn?.size || ItemSize.sm}
+          size={ItemSize.xs}
           triggerEvent={triggerEvent}
           row={row}
           rowActions={rowActions}
@@ -76,5 +77,6 @@ export function createColumns<TData>({
       ),
     });
   }
+
   return [...indexColumns, ...autoCols, ...actionColumns];
 }

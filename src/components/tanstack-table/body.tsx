@@ -4,18 +4,16 @@ import type { Table, RowData } from "@tanstack/react-table";
 import { flexRender } from "@tanstack/react-table";
 import type { TableBodyStyles } from "@/types/index";
 import { ItemSize } from "@/constants";
-import type { AppsmithColumnMeta } from "@/types";
+import {
+  getCommonPinningStyles,
+  getCommonPinningClasses,
+  sizeClasses,
+} from "./styles";
+import { type AppsmithColumnMeta } from "@/types/index";
 
 type BodyProps<TData extends RowData> = {
   table: Table<TData>;
   styles?: TableBodyStyles;
-};
-
-export const sizeClasses: Record<ItemSize, string> = {
-  xs: "p-0.5 lg:p-1 mx-auto text-center lg:text-center",
-  sm: "text-xs font-light px-0.5 py-1 leading-4 lg:p-1 lg:text-sm",
-  md: "text-sm p-1 leading-5 lg:p-2 lg:text-base",
-  lg: "text-base font-bold p-2 leading-6 lg:px-4 lg:py-2 lg:text-lg",
 };
 
 function TanstackTableBody<TData extends RowData>({
@@ -29,25 +27,23 @@ function TanstackTableBody<TData extends RowData>({
           key={row.id}
           className={cn("even:bg-foreground/5", styles?.row)}
         >
-          {row.getVisibleCells().map((cell) => {
-            const size =
-              (cell.column.columnDef.meta as AppsmithColumnMeta)?.size ??
-              ItemSize.md;
-            const sizeClass = sizeClasses[size];
-
-            return (
-              <TableCell
-                key={cell.id}
-                className={cn(
-                  "whitespace-normal break-words border text-center lg:text-start max-w-96",
-                  sizeClass,
-                  styles?.cell
-                )}
-              >
-                {flexRender(cell.column.columnDef.cell, cell.getContext())}
-              </TableCell>
-            );
-          })}
+          {row.getVisibleCells().map((cell) => (
+            <TableCell
+              key={cell.id}
+              className={cn(
+                "whitespace-normal break-words border text-center lg:text-start max-w-96",
+                getCommonPinningClasses(cell.column),
+                sizeClasses[
+                  (cell.column.columnDef.meta as AppsmithColumnMeta)?.size ||
+                    ItemSize.md
+                ],
+                styles?.cell
+              )}
+              style={getCommonPinningStyles(cell.column)}
+            >
+              {flexRender(cell.column.columnDef.cell, cell.getContext())}
+            </TableCell>
+          ))}
         </TableRow>
       ))}
     </TableBody>

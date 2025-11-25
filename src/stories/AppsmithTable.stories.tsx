@@ -4,7 +4,7 @@ import ClientTable from "../ClientTable";
 import { ClientSideProps } from "./ClientSide";
 import { StyledTableProps } from "./StyledTable";
 import { useState, useEffect } from "react";
-import { generateData } from "./ClientSide";
+import { generateData } from "./helper";
 
 // Storybook meta
 const meta: Meta<typeof ClientTable> = {

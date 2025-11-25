@@ -1,38 +1,7 @@
 import "../tailwind.css";
-import type { RowAction, Schema, TableModel } from "../types";
-import { ItemSize } from "../constants";
+import type { RowAction, TableModel } from "../types";
 import { PinDirection } from "../constants";
-import { faker } from "@faker-js/faker";
-
-const postsSchema: Schema = {
-  id: {
-    title: "ID",
-    sort: true,
-  },
-  name: {
-    title: "Name",
-    sort: true,
-    size: ItemSize.md,
-  },
-  email: {
-    title: "Email",
-    sort: true,
-    size: ItemSize.md,
-  },
-  phone: {
-    title: "Phone",
-    sort: true,
-    size: ItemSize.lg,
-  },
-  orders: {
-    title: "Orders",
-    sort: true,
-    size: ItemSize.lg,
-  },
-  description: {
-    title: "Description",
-  },
-};
+import { generateData, mockSchema } from "./helper";
 
 const postsRowActions: RowAction[] = [
   { title: "Korish", onClick: "onClick", icon: "Activity" },
@@ -40,25 +9,14 @@ const postsRowActions: RowAction[] = [
   { title: "Tolov", onClick: "onClick" },
 ];
 
-export const generateData = (count: number) => {
-  return Array.from({ length: count }).map(() => ({
-    id: faker.number.int(),
-    name: faker.person.fullName(),
-    email: faker.internet.email(),
-    phone: faker.phone.number(),
-    orders: faker.number.int(),
-    description: faker.lorem.sentence(),
-  }));
-};
-
 export const ClientSideProps: TableModel = {
   tableData: generateData(20),
   limit: 20,
   max_count: 400,
-  schema: postsSchema,
+  schema: mockSchema,
   rowActions: postsRowActions,
-  actionColumn: { enable: true, pin: PinDirection.right, size: ItemSize.sm },
-  indexRow: { enable: true, size: ItemSize.sm },
+  actionColumn: { enable: true, pin: PinDirection.right },
+  indexColumn: { enable: true },
   triggerEvent: (event: string, data: any) => {
     if (event === "onLoadMore") {
       console.log(data);

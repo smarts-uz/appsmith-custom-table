@@ -48,7 +48,7 @@ export function ActionCell<TData>({
       <Button
         variant="ghost"
         size="sm"
-        className="w-full min-w-6 h-full p-2 flex items-center gap-2"
+        className="w-full min-w-8 h-full p-2 flex items-center gap-2"
         onClick={() => handleAction(action.onClick)}
       >
         {renderIcon(action.icon as keyof typeof LucideIcons)}

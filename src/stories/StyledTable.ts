@@ -1,34 +1,8 @@
 import "../tailwind.css";
-import type { RowAction, Schema, TableModel } from "../types";
-import { ItemSize, PinDirection } from "../constants";
+import type { RowAction, TableModel } from "../types";
+import { PinDirection } from "../constants";
 import type { AppsmithTableStyles } from "@/types/index";
-
-export const postsSchema: Schema = {
-  id: {
-    title: "ID",
-    sort: true,
-  },
-  name: {
-    title: "Name",
-    sort: true,
-    size: ItemSize.md,
-  },
-  email: {
-    title: "Email",
-    sort: true,
-    size: ItemSize.md,
-  },
-  phone: {
-    title: "Phone",
-    sort: true,
-    size: ItemSize.lg,
-  },
-  agent: {
-    title: "Agent",
-    sort: true,
-    size: ItemSize.lg,
-  },
-};
+import { generateData, mockSchema } from "./helper";
 
 export const postsRowActions: RowAction[] = [
   { title: "Korish", onClick: "onClick", icon: "Activity" },
@@ -68,11 +42,12 @@ export const tableStyles: AppsmithTableStyles = {
 };
 
 export const StyledTableProps: TableModel = {
-  tableData: [],
+  tableData: generateData(40),
+  limit: 40,
   max_count: 100,
-  schema: postsSchema,
+  schema: mockSchema,
   rowActions: postsRowActions,
-  actionColumn: { enable: true, pin: PinDirection.right, size: ItemSize.sm },
-  indexRow: { enable: true, size: ItemSize.sm },
+  actionColumn: { enable: true },
+  indexColumn: { enable: true, pin: PinDirection.left },
   styles: tableStyles,
 };

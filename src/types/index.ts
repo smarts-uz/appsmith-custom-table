@@ -12,16 +12,14 @@ const ColumnItemSchema = z.object({
   className: z.string().optional(),
 });
 
-export const IndexRowSchema = z.object({
+export const IndexColumnSchema = z.object({
   enable: z.boolean(),
   pin: z.enum(PinDirection).default(PinDirection.left).optional(),
-  size: z.enum(ItemSize).default(ItemSize.sm).optional(),
 });
 
 export const ActionColumnSchema = z.object({
   enable: z.boolean(),
-  size: z.enum(ItemSize).default(ItemSize.md),
-  pin: z.enum(PinDirection).default(PinDirection.left),
+  pin: z.enum(PinDirection).default(PinDirection.right).optional(),
 });
 
 export type LucideIconName = keyof typeof LucideIcons;
@@ -88,9 +86,9 @@ export const TableModelSchema = z.object({
   limit: z.number().default(PER_PAGE).optional(),
   max_count: z.number(),
   schema: TableSchema,
-  indexRow: IndexRowSchema.optional(),
   rowActions: z.array(RowActionSchema).optional(),
   rowSelectionAction: z.string().optional(),
+  indexColumn: IndexColumnSchema.optional(),
   actionColumn: ActionColumnSchema.optional(),
   translations: z.record(z.string(), z.string()).optional(),
   styles: AppsmithTableStyles,
@@ -106,7 +104,7 @@ export interface AppsmithColumnMeta {
 
 export type ColumnItem = z.infer<typeof ColumnItemSchema>;
 export type TableModel = z.infer<typeof TableModelSchema>;
-export type IndexRow = z.infer<typeof IndexRowSchema>;
+export type IndexColumn = z.infer<typeof IndexColumnSchema>;
 export type ActionColumn = z.infer<typeof ActionColumnSchema>;
 export type RowAction = z.infer<typeof RowActionSchema>;
 export type Schema = z.infer<typeof TableSchema>;

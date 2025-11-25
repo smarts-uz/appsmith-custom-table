@@ -3,6 +3,13 @@ import type { Table } from "@tanstack/react-table";
 import { cn } from "@/lib/utils";
 import { TableHeader, TableHead, TableRow } from "@/components/ui/table";
 import type { TableHeadStyles } from "@/types/index";
+import {
+  getCommonPinningStyles,
+  getCommonPinningClasses,
+  sizeClasses,
+} from "./styles";
+import { type AppsmithColumnMeta } from "@/types/index";
+import { ItemSize } from "@/constants";
 
 interface HeadProps<TData> {
   table: Table<TData>;
@@ -13,7 +20,7 @@ const TanstackTableHead = <TData,>({ table, styles }: HeadProps<TData>) => {
   return (
     <TableHeader
       className={cn(
-        "top-0 sticky bg-card outline-border border-b outline",
+        "top-0 z-20 sticky bg-card outline-border border-b outline",
         styles?.body
       )}
     >
@@ -26,9 +33,15 @@ const TanstackTableHead = <TData,>({ table, styles }: HeadProps<TData>) => {
               className={cn(
                 "whitespace-normal break-words text-center border p-1 md:text-start min-w-8 md:px-2",
                 header.column.getCanSort() && "cursor-pointer",
+                getCommonPinningClasses(header.column),
+                sizeClasses[
+                  (header.column.columnDef.meta as AppsmithColumnMeta)?.size ||
+                    ItemSize.md
+                ],
                 styles?.cell
               )}
               onClick={header.column.getToggleSortingHandler()}
+              style={getCommonPinningStyles(header.column)}
             >
               {flexRender(header.column.columnDef.header, header.getContext())}
             </TableHead>

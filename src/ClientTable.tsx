@@ -4,7 +4,6 @@ import {
   useReactTable,
   getCoreRowModel,
   getSortedRowModel,
-  type ColumnPinningState,
 } from "@tanstack/react-table";
 import TanstackTableBody from "@/components/tanstack-table/body";
 import TanstackTableHead from "@/components/tanstack-table/head";
@@ -24,7 +23,7 @@ function ClientTable(props: TableModel) {
     rowActions,
     rowSelectionAction,
     actionColumn,
-    indexRow,
+    indexColumn,
     tableData,
     max_count,
     styles,
@@ -36,7 +35,6 @@ function ClientTable(props: TableModel) {
 
   const validation = validateTableModel(props);
   const [rowSelection, setRowSelection] = React.useState({});
-  const [rowPinning, setRowPinning] = React.useState({});
   const [page, setPage] = React.useState(0);
   const [hasMore, setHasMore] = React.useState(true);
   const [data, setData] = React.useState(tableData || []);
@@ -47,31 +45,28 @@ function ClientTable(props: TableModel) {
     const left: string[] = [];
     const right: string[] = [];
 
-    if (indexRow?.enable) {
-      if (indexRow?.pin === PinDirection.left) left.push("#");
-      else if (indexRow?.pin === PinDirection.right) right.push("#");
+    if (indexColumn?.enable && indexColumn?.pin) {
+      if (indexColumn?.pin === PinDirection.left) left.push("index");
+      else if (indexColumn?.pin === PinDirection.right) right.push("index");
     }
 
-    if (actionColumn?.enable && rowActions && rowActions?.length > 0) {
+    if (
+      actionColumn?.enable &&
+      actionColumn?.pin &&
+      rowActions &&
+      rowActions?.length > 0
+    ) {
       if (actionColumn?.pin === PinDirection.left) left.push("actions");
       else if (actionColumn?.pin === PinDirection.right) right.push("actions");
     }
-
+    console.log(left, right, indexColumn, actionColumn);
     return { left, right };
-  }, [indexRow, actionColumn, rowActions]);
-
-  const [columnPinning, setColumnPinning] = React.useState<ColumnPinningState>(
-    getInitialPinning()
-  );
-
-  React.useEffect(() => {
-    setColumnPinning(getInitialPinning());
-  }, [getInitialPinning]);
+  }, [indexColumn, actionColumn, rowActions]);
 
   const columns = createColumns({
     schema,
     rowActions,
-    indexRow,
+    indexColumn,
     actionColumn,
     triggerEvent,
   });
@@ -82,12 +77,10 @@ function ClientTable(props: TableModel) {
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     onRowSelectionChange: setRowSelection,
-    onRowPinningChange: setRowPinning,
     state: {
       sorting,
       rowSelection,
-      columnPinning,
-      rowPinning,
+      columnPinning: getInitialPinning(),
     },
     enableRowSelection: true,
     manualSorting: true,
@@ -160,14 +153,14 @@ function ClientTable(props: TableModel) {
   return (
     <main
       className={cn(
-        "max-h-svh lg:max-h-[40rem] border-border xl:max-h-[48rem] relative flex flex-col gap-2 overflow-y-auto font-sans",
+        "max-h-[36rem] lg:max-h-[40rem] border-border xl:max-h-[48rem] flex flex-col gap-2 overflow-auto font-sans relative",
         styles?.container
       )}
       style={{ ...styles?.variables }}
     >
       <Table
         className={cn(
-          "w-full min-w-96 h-full table-auto border-collapse",
+          "w-full min-w-80 h-full table-auto border-collapse",
           styles?.table
         )}
       >
