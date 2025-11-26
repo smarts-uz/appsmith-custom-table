@@ -12,11 +12,11 @@ export const sizeClasses: Record<ItemSize, string> = {
 export const getCommonPinningStyles = (column: any): CSSProperties => ({
   left:
     column.getIsPinned() === "left"
-      ? `${column.getStart("left") - 1.25}px`
+      ? `${column.getStart("left")}px`
       : undefined,
   right:
     column.getIsPinned() === "right"
-      ? `${column.getAfter("right") - 1.25}px`
+      ? `${column.getAfter("right")}px`
       : undefined,
   width: column.getSize(),
 });

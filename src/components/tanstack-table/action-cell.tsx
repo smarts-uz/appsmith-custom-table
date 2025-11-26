@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import * as LucideIcons from "lucide-react";
 import type { LucideIcon } from "lucide-react";
-
+import type { MouseEvent } from "react";
 type ActionCellProps<TData> = {
   row: Row<TData>;
   rowActions: RowAction[];
@@ -26,7 +26,11 @@ export function ActionCell<TData>({
   type,
   triggerEvent,
 }: ActionCellProps<TData>) {
-  const handleAction = (eventName: string) => {
+  const handleAction = (
+    eventName: string,
+    e: MouseEvent<HTMLButtonElement | HTMLDivElement>
+  ) => {
+    e.stopPropagation();
     if (triggerEvent) {
       triggerEvent(eventName, { row: row.original });
     }
@@ -49,7 +53,7 @@ export function ActionCell<TData>({
         variant={type || "default"}
         size="icon"
         className="w-full min-w-8 h-full p-2 flex items-center gap-2"
-        onClick={() => handleAction(action.onClick)}
+        onClick={(e) => handleAction(action.onClick, e)}
       >
         {renderIcon(action.icon as keyof typeof LucideIcons)}
       </Button>
@@ -74,7 +78,7 @@ export function ActionCell<TData>({
           <DropdownMenuItem
             key={i}
             className="flex items-center gap-2 text-base font-semibold"
-            onClick={() => handleAction(action.onClick)}
+            onClick={(e) => handleAction(action.onClick, e)}
           >
             {renderIcon(action.icon as keyof typeof LucideIcons)}
             {action.title}
