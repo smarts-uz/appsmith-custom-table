@@ -38,7 +38,7 @@ const TableBodyCell: React.FC<TableCellHoverProps> = ({ value, type }) => {
     </div>
   );
 
-  return isOverflowing ? (
+  return isOverflowing && type !== "url" ? (
     <Popover>
       <PopoverTrigger
         className="h-min max-w-40 md:max-w-64 lg:max-w-full lg:text-start"
