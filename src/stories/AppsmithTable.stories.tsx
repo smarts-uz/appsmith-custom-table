@@ -1,11 +1,12 @@
 import "../tailwind.css";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import ClientTable from "../ClientTable";
-import { ClientSideProps } from "./Default";
+import { DefaultTableProps } from "./Default";
 import { StyledTableProps } from "./StyledTable";
 import { useState, useEffect } from "react";
 import { generateData } from "./helper";
 import { ConditionalTableProps } from "./Conditional";
+import { TranslatedTableProps } from "./TranslatedTable";
 
 // Storybook meta
 const meta: Meta<typeof ClientTable> = {
@@ -26,7 +27,7 @@ type Story = StoryObj<typeof ClientTable>;
 // Full story
 export const Default: Story = {
   args: {
-    ...ClientSideProps,
+    ...DefaultTableProps,
   },
   parameters: {
     docs: {
@@ -94,6 +95,22 @@ export const ConditionallyStyledTable: Story = {
       description: {
         story:
           "This story demonstrates a table with conditional row styling based on `Foydalanilgan kun` thresholds for over 150 blue, 300 red. and if debt_amount is less than total_payment_amount, it will be green otherwise red text.",
+      },
+    },
+  },
+  render: (args) => <ClientTable {...args} />,
+};
+
+export const TranslatedTable: Story = {
+  args: {
+    ...TranslatedTableProps,
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: `
+  Appsmith Custom Table with translations support
+  `,
       },
     },
   },

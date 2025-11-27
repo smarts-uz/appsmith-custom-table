@@ -1,7 +1,6 @@
 import z from "zod";
 import { ItemSize, PER_PAGE, PinDirection } from "../constants";
 import * as LucideIcons from "lucide-react";
-import { type SortDirection } from "@tanstack/react-table";
 import { RowStyleOperator } from "../constants";
 
 export const ColumnItemType = z.enum([
@@ -15,10 +14,12 @@ export const ColumnItemType = z.enum([
 
 const ColumnItemSchema = z.object({
   type: ColumnItemType.default("text").optional(),
-  sort: z.boolean().optional(),
   size: z.enum(ItemSize).optional(),
   title: z
-    .string({ error: "An incorrect schema title is provided" })
+    .record(
+      z.string({ error: "An incorrect schema title is provided" }),
+      z.string({ error: "An incorrect schema title body is provided" })
+    )
     .optional(),
   className: z.string().optional(),
 });
@@ -66,33 +67,25 @@ export const AppsmithTableStyles = z
   })
   .optional();
 
-export const TriggerEventSchema = z
-  .function({
-    input: [
-      z.string(),
-      z.object({
-        row: z.any().optional(),
-        sortCol: z.string().optional(),
-        sortOption: z.custom<SortDirection>().optional(),
-        page: z.number().optional(),
-        limit: z.number().optional(),
-        url: z.url().optional(),
-      }),
-    ],
-  })
-  .optional();
+export const TriggerEventSchema = z.function({
+  input: [
+    z.string(),
+    z.object({
+      row: z.any().optional(),
+      page: z.number().optional(),
+      limit: z.number().optional(),
+      url: z.url().optional(),
+    }),
+  ],
+});
 
-export const UpdateModelSchema = z
-  .function({
-    input: [z.any()],
-  })
-  .optional();
+export const UpdateModelSchema = z.function({
+  input: [z.any()],
+});
 
-export const OnModelChangeSchema = z
-  .function({
-    input: [z.any()],
-  })
-  .optional();
+export const OnModelChangeSchema = z.function({
+  input: [z.any()],
+});
 
 const ConditionalRowStyleSchema = z.object({
   column: z.string(),
@@ -110,16 +103,14 @@ const ConditionalRowStyleSchema = z.object({
 export const TableModelSchema = z.object({
   tableData: z.array(z.any()).default([]),
   limit: z.number().default(PER_PAGE).optional(),
-  max_count: z.number(),
+  max_count: z.number().default(PER_PAGE).optional(),
   schema: TableSchema,
   rowActions: z.array(RowActionSchema).optional(),
   rowSelectionAction: z.string().optional(),
   indexColumn: IndexColumnSchema.optional(),
   actionColumn: ActionColumnSchema.optional(),
-  translations: z.record(z.string(), z.string()).optional(),
   conditionalRowStyles: z.array(ConditionalRowStyleSchema).optional(),
-  locale: z.string().optional(),
-  direction: z.enum(["ltr", "rtl"]).default("ltr").optional(),
+  locale: z.string(),
   styles: AppsmithTableStyles,
   triggerEvent: TriggerEventSchema,
   updateModel: UpdateModelSchema,

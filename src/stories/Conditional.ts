@@ -10,9 +10,8 @@ const postsRowActions: RowAction[] = [
 ];
 
 export const ConditionalTableProps: TableModel = {
+  locale: 'uz',
   tableData: generateData(20),
-  limit: 20,
-  max_count: 400,
   schema: mockSchema,
   rowActions: postsRowActions,
   actionColumn: { enable: true, pin: PinDirection.right, type: "outline" },
@@ -43,4 +42,8 @@ export const ConditionalTableProps: TableModel = {
       className: "even:text-green-800 odd:text-green-800 font-bold",
     },
   ],
+  onModelChange: (model) => console.log(model),
+  triggerEvent: (event) => console.log(event),
+  updateModel: (model) => console.log(model),
+  
 };

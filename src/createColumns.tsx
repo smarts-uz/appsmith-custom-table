@@ -6,13 +6,13 @@ import type z from "zod";
 import TableBodyCell from "./components/tanstack-table/body-cell";
 
 const CreateColumns = TableModelSchema.omit({
-  translations: true,
   rowSelectionAction: true,
   updateModel: true,
   tableData: true,
   limit: true,
   max_count: true,
   styles: true,
+  onModelChange: true,
 });
 
 type CreateColumnsProps = z.infer<typeof CreateColumns>;
@@ -22,6 +22,7 @@ export function createColumns<TData>({
   indexColumn,
   rowActions = [],
   actionColumn,
+  locale,
   triggerEvent,
 }: CreateColumnsProps): ColumnDef<TData>[] {
   const indexColumns: ColumnDef<TData>[] = [];
@@ -38,13 +39,14 @@ export function createColumns<TData>({
 
   const autoCols = Object.entries(schema)
     .map(([colKey, colSchema]) => {
-      const { sort, size = ItemSize.md, title } = colSchema;
-      const headerText = title || colKey[0].toUpperCase() + colKey.slice(1);
+      const { size = ItemSize.md, title } = colSchema;
+      const headerText = title
+        ? title[locale]
+        : colKey[0].toUpperCase() + colKey.slice(1);
 
       const colDef: ColumnDef<TData> = {
         accessorKey: colKey,
         header: headerText,
-        enableSorting: sort,
         meta: {
           headerText,
           size,

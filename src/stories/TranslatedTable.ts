@@ -9,10 +9,10 @@ const postsRowActions: RowAction[] = [
   { title: "Tolov", onClick: "onClick" },
 ];
 
-export const DefaultTableProps: TableModel = {
+export const TranslatedTableProps: TableModel = {
   tableData: generateData(20),
   schema: mockSchema,
-  locale: "uz",
+  locale: "ru",
   rowActions: postsRowActions,
   actionColumn: { enable: true, pin: PinDirection.right, type: "outline" },
   indexColumn: { enable: true },

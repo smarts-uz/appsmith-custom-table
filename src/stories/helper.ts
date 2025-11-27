@@ -5,34 +5,34 @@ import { faker } from "@faker-js/faker";
 
 export const mockSchema: Schema = {
   customer_name: {
-    title: "Mijoz Ismi",
+    title: { uz: "Mijoz Ismi", ru: "Имя клиента" },
   },
   delivery_location: {
-    title: "Mijoz Ismi",
+    title: { uz: "Yetkazish Manzili", ru: "Адрес доставки" },
     type: "url",
   },
   start_date: {
-    title: "Sanasi",
+    title: { uz: "Sana", ru: "Дата" },
     type: "date",
   },
   total_lost_qty: {
-    title: "Qolgan maxsulot soni",
+    title: { uz: "Qolgan maxsulot soni", ru: "Количество оставшихся товаров" },
     size: ItemSize.sm,
   },
   used_days: {
-    title: "Foydalanilgan kun",
+    title: { uz: "Foydalanilgan kun", ru: "Количество дней использования" },
     size: ItemSize.sm,
   },
   debt_amount: {
-    title: "Qarz",
+    title: { uz: "Qarz", ru: "Долг" },
     type: "currency",
   },
   customer_phone: {
-    title: "Telefon Raqam",
+    title: { uz: "Telefon Raqam", ru: "Телефон номер" },
     type: "phone",
   },
   total_payment_amount: {
-    title: "Ummiy tolangan",
+    title: { uz: "Ummiy tolangan", ru: "Общий платеж" },
     type: "currency",
   },
 };

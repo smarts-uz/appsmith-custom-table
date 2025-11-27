@@ -42,10 +42,12 @@ export const tableStyles: AppsmithTableStyles = {
 
 export const StyledTableProps: TableModel = {
   tableData: generateData(40),
-  limit: 40,
-  max_count: 100,
+  locale: "uz",
   schema: mockSchema,
   rowActions: postsRowActions,
+  onModelChange: (model) => console.log(model),
+  triggerEvent: (event) => console.log(event),
+  updateModel: (model) => console.log(model),
   actionColumn: { enable: true, type: "destructive" },
   indexColumn: { enable: true, pin: PinDirection.left },
   styles: tableStyles,

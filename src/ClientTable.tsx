@@ -1,10 +1,6 @@
 import React from "react";
 import { InView } from "react-intersection-observer";
-import {
-  useReactTable,
-  getCoreRowModel,
-  getSortedRowModel,
-} from "@tanstack/react-table";
+import { useReactTable, getCoreRowModel } from "@tanstack/react-table";
 import TanstackTableBody from "@/components/tanstack-table/body";
 import TanstackTableHead from "@/components/tanstack-table/head";
 import { createColumns } from "./createColumns";
@@ -25,10 +21,11 @@ function ClientTable(props: TableModel) {
     actionColumn,
     indexColumn,
     tableData,
-    max_count,
+    max_count = PER_PAGE,
     styles,
     limit = PER_PAGE,
     conditionalRowStyles,
+    locale,
     updateModel = () => {},
     triggerEvent = () => {},
     onModelChange = () => {},
@@ -38,8 +35,6 @@ function ClientTable(props: TableModel) {
   const [page, setPage] = React.useState(0);
   const [hasMore, setHasMore] = React.useState(true);
   const [data, setData] = React.useState(tableData || []);
-
-  const [sorting] = React.useState([]);
 
   const getInitialPinning = React.useCallback(() => {
     const left: string[] = [];
@@ -68,15 +63,14 @@ function ClientTable(props: TableModel) {
     indexColumn,
     actionColumn,
     triggerEvent,
+    locale,
   });
 
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
-    getSortedRowModel: getSortedRowModel(),
     state: {
-      sorting,
       columnPinning: getInitialPinning(),
     },
     manualSorting: true,
