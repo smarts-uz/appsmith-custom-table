@@ -17,7 +17,10 @@ export const getConditionalRowClassName = <TData extends RowData>({
 
   const rowData = row.original;
 
-  const operators: Record<string, (cell: Primitive, value?: any) => boolean> = {
+  const operators: Record<
+    string,
+    (cell: Primitive, value?: Primitive) => boolean
+  > = {
     ">": (c, v) => isNumber(c) && isNumber(v) && c > v,
     "<": (c, v) => isNumber(c) && isNumber(v) && c < v,
     ">=": (c, v) => isNumber(c) && isNumber(v) && c >= v,
@@ -36,17 +39,26 @@ export const getConditionalRowClassName = <TData extends RowData>({
     isNotEmpty: (c) => c !== null && c !== undefined && c !== "",
   };
 
+  let classNames = "";
+
   for (const rule of conditionalRowStyles) {
     const { column, operator, value, className } = rule;
     if (!column || !operator || !className) continue;
 
     const cellValue = rowData[column as keyof TData] as Primitive;
+    let comparisonValue: Primitive;
+
+    if (value && typeof value === "object" && "columnRef" in value) {
+      comparisonValue = rowData[value.columnRef as keyof TData] as Primitive;
+    } else {
+      comparisonValue = value as Primitive;
+    }
 
     const opFn = operators[operator];
-    if (opFn?.(cellValue, value)) {
-      return className;
+    if (opFn?.(cellValue, comparisonValue)) {
+      classNames += className + " ";
     }
   }
 
-  return "";
+  return classNames.trim();
 };

@@ -21,20 +21,26 @@ export const ConditionalTableProps: TableModel = {
     {
       column: "used_days",
       operator: RowStyleOperator.GTE,
+      value: 150,
+      className: "even:bg-blue-400 odd:bg-blue-400",
+    },
+    {
+      column: "used_days",
+      operator: RowStyleOperator.GTE,
       value: 300,
       className: "even:bg-red-400 odd:bg-red-400",
     },
     {
-      column: "used_days",
-      operator: RowStyleOperator.GTE,
-      value: 200,
-      className: "even:bg-yellow-400 odd:bg-yellow-400",
+      column: "total_payment_amount",
+      operator: RowStyleOperator.LT,
+      value: { columnRef: "debt_amount" },
+      className: "even:text-red-800 odd:text-red-800 font-bold",
     },
     {
-      column: "used_days",
+      column: "total_payment_amount",
       operator: RowStyleOperator.GTE,
-      value: 100,
-      className: "even:bg-blue-400 odd:bg-blue-400",
+      value: { columnRef: "debt_amount" },
+      className: "even:text-green-800 odd:text-green-800 font-bold",
     },
   ],
 };

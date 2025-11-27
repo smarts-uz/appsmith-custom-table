@@ -97,7 +97,13 @@ export const OnModelChangeSchema = z
 const ConditionalRowStyleSchema = z.object({
   column: z.string(),
   operator: z.enum(RowStyleOperator),
-  value: z.union([z.string(), z.number(), z.undefined(), z.boolean()]),
+  value: z.union([
+    z.string(),
+    z.number(),
+    z.undefined(),
+    z.boolean(),
+    z.object({ columnRef: z.string() }),
+  ]),
   className: z.string(),
 });
 
