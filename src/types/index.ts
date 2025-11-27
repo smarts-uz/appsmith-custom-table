@@ -1,7 +1,8 @@
-import { ItemSize, PER_PAGE, PinDirection } from "../constants";
 import z from "zod";
+import { ItemSize, PER_PAGE, PinDirection } from "../constants";
 import * as LucideIcons from "lucide-react";
 import { type SortDirection } from "@tanstack/react-table";
+import { RowStyleOperator } from "../constants";
 
 export const ColumnItemType = z.enum([
   "text",
@@ -75,6 +76,7 @@ export const TriggerEventSchema = z
         sortOption: z.custom<SortDirection>().optional(),
         page: z.number().optional(),
         limit: z.number().optional(),
+        url: z.url().optional(),
       }),
     ],
   })
@@ -92,6 +94,13 @@ export const OnModelChangeSchema = z
   })
   .optional();
 
+const ConditionalRowStyleSchema = z.object({
+  column: z.string(),
+  operator: z.enum(RowStyleOperator),
+  value: z.union([z.string(), z.number(), z.undefined(), z.boolean()]),
+  className: z.string(),
+});
+
 export const TableModelSchema = z.object({
   tableData: z.array(z.any()).default([]),
   limit: z.number().default(PER_PAGE).optional(),
@@ -102,6 +111,9 @@ export const TableModelSchema = z.object({
   indexColumn: IndexColumnSchema.optional(),
   actionColumn: ActionColumnSchema.optional(),
   translations: z.record(z.string(), z.string()).optional(),
+  conditionalRowStyles: z.array(ConditionalRowStyleSchema).optional(),
+  locale: z.string().optional(),
+  direction: z.enum(["ltr", "rtl"]).default("ltr").optional(),
   styles: AppsmithTableStyles,
   triggerEvent: TriggerEventSchema,
   updateModel: UpdateModelSchema,
@@ -124,3 +136,4 @@ export type AppsmithTableStyles = z.infer<typeof AppsmithTableStyles>;
 export type TriggerEvent = z.infer<typeof TriggerEventSchema>;
 export type UpdateModel = z.infer<typeof UpdateModelSchema>;
 export type ColumnType = z.infer<typeof ColumnItemType>;
+export type ConditionalRowStyle = z.infer<typeof ConditionalRowStyleSchema>;

@@ -53,6 +53,7 @@ export function createColumns<TData>({
           <TableBodyCell
             value={info.getValue()}
             type={colSchema.type || "text"}
+            triggerEvent={triggerEvent}
           />
         ),
       };

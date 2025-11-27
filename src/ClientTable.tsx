@@ -28,6 +28,7 @@ function ClientTable(props: TableModel) {
     max_count,
     styles,
     limit = PER_PAGE,
+    conditionalRowStyles,
     updateModel = () => {},
     triggerEvent = () => {},
     onModelChange = () => {},
@@ -129,7 +130,7 @@ function ClientTable(props: TableModel) {
   return (
     <main
       className={cn(
-        "max-h-[36rem] lg:max-h-[40rem] xl:max-h-[48rem] flex flex-col gap-2 overflow-auto font-sans relative pb-2",
+        "max-h-[40rem] md:max-h-[48rem] lg:max-h-[56rem] flex flex-col gap-2 overflow-auto font-sans relative pb-2",
         styles?.container
       )}
       style={{ ...styles?.variables }}
@@ -147,6 +148,7 @@ function ClientTable(props: TableModel) {
           triggerEvent={triggerEvent}
           styles={styles?.body}
           table={table}
+          conditionalRowStyles={conditionalRowStyles}
         />
       </Table>
       {hasMore && (

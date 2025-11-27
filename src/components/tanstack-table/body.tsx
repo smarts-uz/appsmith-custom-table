@@ -13,8 +13,9 @@ import {
   getCommonPinningClasses,
   bodySizeClasses,
 } from "./styles";
-import { type AppsmithColumnMeta } from "@/types/index";
+import type { AppsmithColumnMeta, ConditionalRowStyle } from "@/types/index";
 import React from "react";
+import { getConditionalRowClassName } from "@/lib/getConditionalStyling";
 
 type BodyProps<TData extends RowData> = {
   table: Table<TData>;
@@ -22,6 +23,7 @@ type BodyProps<TData extends RowData> = {
   updateModel?: UpdateModel;
   triggerEvent?: TriggerEvent;
   rowSelectionAction?: string;
+  conditionalRowStyles?: ConditionalRowStyle[];
 };
 
 function TanstackTableBody<TData extends RowData>({
@@ -30,6 +32,7 @@ function TanstackTableBody<TData extends RowData>({
   updateModel,
   triggerEvent,
   rowSelectionAction,
+  conditionalRowStyles
 }: BodyProps<TData>) {
   const [rowSelection, setRowSelection] = React.useState<TData | null>(null);
 
@@ -51,7 +54,8 @@ function TanstackTableBody<TData extends RowData>({
           data-selected={rowSelection === row.original}
           className={cn(
             "odd:bg-background even:bg-secondary h-12",
-            styles?.row
+            styles?.row,
+            getConditionalRowClassName({ row, conditionalRowStyles })
           )}
         >
           {row.getVisibleCells().map((cell) => (
