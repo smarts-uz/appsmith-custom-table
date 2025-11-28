@@ -30,7 +30,11 @@ const TableBodyCell: React.FC<TableCellHoverProps> = ({
     }
   }, [displayValue]);
 
-  if (value === null) {
+  if (
+    value === null ||
+    value === undefined ||
+    (typeof value === "number" && isNaN(+value))
+  ) {
     return <></>;
   }
 

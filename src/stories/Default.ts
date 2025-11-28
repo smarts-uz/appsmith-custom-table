@@ -11,6 +11,7 @@ const postsRowActions: RowAction[] = [
 
 export const DefaultTableProps: TableModel = {
   tableData: generateData(20),
+  limit: 22,
   schema: mockSchema,
   locale: "uz",
   rowActions: postsRowActions,

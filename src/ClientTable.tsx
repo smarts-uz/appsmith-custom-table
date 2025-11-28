@@ -36,6 +36,27 @@ function ClientTable(props: TableModel) {
   const [hasMore, setHasMore] = React.useState(true);
   const [data, setData] = React.useState(tableData || []);
 
+  const displayData = React.useMemo(() => {
+    const rows = data || [];
+    const missing = limit - rows.length;
+
+    if (missing > 0) {
+      // create placeholder based on schema keys
+      const placeholder = Object.fromEntries(
+        Object.keys(schema).map((key) => [key, undefined])
+      );
+
+      const placeholders = Array.from({ length: missing }, () => ({
+        __empty: true,
+        ...placeholder,
+      }));
+
+      return [...rows, ...placeholders];
+    }
+
+    return rows;
+  }, [data, limit, schema]);
+
   const getInitialPinning = React.useCallback(() => {
     const left: string[] = [];
     const right: string[] = [];
@@ -67,7 +88,7 @@ function ClientTable(props: TableModel) {
   });
 
   const table = useReactTable({
-    data,
+    data: displayData,
     columns,
     getCoreRowModel: getCoreRowModel(),
     state: {
