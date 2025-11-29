@@ -71,10 +71,7 @@ export function ActionCell<TData>({
           asChild
           size="icon"
           variant={type || "default"}
-          className={cn(
-            "w-full h-full p-2 min-w-8 mx-auto",
-            actionColumn?.styles?.trigger
-          )}
+          className="w-full h-full p-2 min-w-8 mx-auto"
         >
           {renderIcon(
             (actionColumn?.icon as keyof typeof LucideIcons) || "MoreHorizontal"
@@ -82,10 +79,7 @@ export function ActionCell<TData>({
         </Button>
       </DropdownMenuTrigger>
 
-      <DropdownMenuContent
-        align="end"
-        className={cn("w-64", actionColumn?.styles?.content)}
-      >
+      <DropdownMenuContent align="end" className={"w-64"}>
         {actionColumn?.actions?.map((action, i) => (
           <DropdownMenuItem
             key={i}

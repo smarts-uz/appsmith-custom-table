@@ -54,9 +54,6 @@ export const ActionColumnSchema = z.object({
   icon: z
     .enum(Object.keys(LucideIcons) as [LucideIconName, ...LucideIconName[]])
     .optional(),
-  styles: z
-    .object({ trigger: z.string().optional(), content: z.string().optional() })
-    .optional(),
 });
 
 export const TableSchema = z.record(z.string(), ColumnItemSchema, {
