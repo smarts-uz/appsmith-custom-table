@@ -16,7 +16,6 @@ import { Loader } from "lucide-react";
 function ClientTable(props: TableModel) {
   const {
     schema,
-    rowActions,
     rowSelectionAction,
     actionColumn,
     indexColumn,
@@ -69,18 +68,16 @@ function ClientTable(props: TableModel) {
     if (
       actionColumn?.enable &&
       actionColumn?.pin &&
-      rowActions &&
-      rowActions?.length > 0
+      actionColumn?.actions?.length > 0
     ) {
       if (actionColumn?.pin === PinDirection.left) left.push("actions");
       else if (actionColumn?.pin === PinDirection.right) right.push("actions");
     }
     return { left, right };
-  }, [indexColumn, actionColumn, rowActions]);
+  }, [indexColumn, actionColumn]);
 
   const columns = createColumns({
     schema,
-    rowActions,
     indexColumn,
     actionColumn,
     triggerEvent,

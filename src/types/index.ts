@@ -27,23 +27,35 @@ const ColumnItemSchema = z.object({
 export const IndexColumnSchema = z.object({
   enable: z.boolean(),
   pin: z.enum(PinDirection).default(PinDirection.left).optional(),
-});
-
-export const ActionColumnSchema = z.object({
-  enable: z.boolean(),
-  pin: z.enum(PinDirection).default(PinDirection.right).optional(),
-  type: z
-    .enum(["default", "destructive", "outline", "secondary", "ghost", "link"])
-    .optional(),
+  className: z.string().optional(),
 });
 
 export type LucideIconName = keyof typeof LucideIcons;
 
 export const RowActionSchema = z.object({
-  title: z.string(),
+  title: z.record(
+    z.string({ error: "An incorrect schema title is provided" }),
+    z.string({ error: "An incorrect schema title body is provided" })
+  ),
   onClick: z.string(),
   icon: z
     .enum(Object.keys(LucideIcons) as [LucideIconName, ...LucideIconName[]])
+    .optional(),
+  className: z.string().optional(),
+});
+
+export const ActionColumnSchema = z.object({
+  enable: z.boolean(),
+  actions: z.array(RowActionSchema),
+  pin: z.enum(PinDirection).default(PinDirection.right).optional(),
+  type: z
+    .enum(["default", "destructive", "outline", "secondary", "ghost", "link"])
+    .optional(),
+  icon: z
+    .enum(Object.keys(LucideIcons) as [LucideIconName, ...LucideIconName[]])
+    .optional(),
+  styles: z
+    .object({ trigger: z.string().optional(), content: z.string().optional() })
     .optional(),
 });
 
@@ -105,7 +117,6 @@ export const TableModelSchema = z.object({
   limit: z.number().default(PER_PAGE).optional(),
   max_count: z.number().default(PER_PAGE).optional(),
   schema: TableSchema,
-  rowActions: z.array(RowActionSchema).optional(),
   rowSelectionAction: z.string().optional(),
   indexColumn: IndexColumnSchema.optional(),
   actionColumn: ActionColumnSchema.optional(),

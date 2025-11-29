@@ -32,7 +32,7 @@ function TanstackTableBody<TData extends RowData>({
   updateModel,
   triggerEvent,
   rowSelectionAction,
-  conditionalRowStyles
+  conditionalRowStyles,
 }: BodyProps<TData>) {
   const [rowSelection, setRowSelection] = React.useState<TData | null>(null);
 

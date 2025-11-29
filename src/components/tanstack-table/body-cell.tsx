@@ -6,17 +6,20 @@ import {
 } from "@/components/ui/popover";
 import { type ColumnType, type TriggerEvent } from "@/types";
 import { formatUzPhone, formatDate, formatDateTime } from "@/lib/formatters";
+import { cn } from "@/lib/utils";
 
 interface TableCellHoverProps {
   value: unknown;
   type: ColumnType;
   triggerEvent: TriggerEvent;
+  className?: string;
 }
 
 const TableBodyCell: React.FC<TableCellHoverProps> = ({
   value,
   type,
   triggerEvent,
+  className,
 }) => {
   const displayValue =
     typeof value === "object" ? JSON.stringify(value) : String(value);
@@ -41,7 +44,10 @@ const TableBodyCell: React.FC<TableCellHoverProps> = ({
   const content = (
     <div
       ref={cellRef}
-      className="truncate text-center max-w-[160px] md:max-w-[256px] lg:max-w-[320px] lg:text-start"
+      className={cn(
+        "truncate text-center max-w-[160px] md:max-w-[256px] lg:max-w-[320px] lg:text-start",
+        className
+      )}
     >
       {renderCell(displayValue, type, triggerEvent)}
     </div>

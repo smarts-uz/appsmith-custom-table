@@ -20,7 +20,6 @@ type CreateColumnsProps = z.infer<typeof CreateColumns>;
 export function createColumns<TData>({
   schema,
   indexColumn,
-  rowActions = [],
   actionColumn,
   locale,
   triggerEvent,
@@ -33,13 +32,15 @@ export function createColumns<TData>({
       meta: {
         size: ItemSize.xs,
       },
-      cell: ({ row }) => row.index + 1,
+      cell: ({ row }) => (
+        <span className={indexColumn?.className}>{row.index + 1}</span>
+      ),
     });
   }
 
   const autoCols = Object.entries(schema)
     .map(([colKey, colSchema]) => {
-      const { size = ItemSize.md, title } = colSchema;
+      const { size = ItemSize.md, title, className } = colSchema;
       const headerText = title
         ? title[locale]
         : colKey[0].toUpperCase() + colKey.slice(1);
@@ -56,6 +57,7 @@ export function createColumns<TData>({
             value={info.getValue()}
             type={colSchema.type || "text"}
             triggerEvent={triggerEvent}
+            className={className}
           />
         ),
       };
@@ -65,7 +67,7 @@ export function createColumns<TData>({
     .filter(Boolean) as ColumnDef<TData>[];
 
   const actionColumns: ColumnDef<TData>[] = [];
-  if (actionColumn?.enable && rowActions.length > 0) {
+  if (actionColumn?.enable && actionColumn.actions.length > 0) {
     actionColumns.push({
       id: "actions",
       header: "",
@@ -77,7 +79,8 @@ export function createColumns<TData>({
           type={actionColumn.type}
           triggerEvent={triggerEvent}
           row={row}
-          rowActions={rowActions}
+          locale={locale}
+          actionColumn={actionColumn}
         />
       ),
     });

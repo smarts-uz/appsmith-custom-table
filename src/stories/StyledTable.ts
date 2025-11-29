@@ -4,10 +4,18 @@ import { PinDirection } from "../constants";
 import type { AppsmithTableStyles } from "@/types/index";
 import { generateData, mockSchema } from "./helper";
 
-export const postsRowActions: RowAction[] = [
-  { title: "Korish", onClick: "onClick", icon: "Activity" },
-  { title: "Qoshish", onClick: "onKomol", icon: "AlarmClockPlus" },
-  { title: "Tolov", onClick: "onClick" },
+const postsRowActions: RowAction[] = [
+  {
+    title: { uz: "Korish", ru: "Кориши" },
+    onClick: "onClick",
+    icon: "Activity",
+  },
+  {
+    title: { uz: "Qoshish", ru: "Кошиши" },
+    onClick: "onKomol",
+    icon: "AlarmClockPlus",
+  },
+  { title: { uz: "Tolov", ru: "Толов" }, onClick: "onClick" },
 ];
 
 export const tableStyles: AppsmithTableStyles = {
@@ -44,11 +52,10 @@ export const StyledTableProps: TableModel = {
   tableData: generateData(40),
   locale: "uz",
   schema: mockSchema,
-  rowActions: postsRowActions,
   onModelChange: (model) => console.log(model),
   triggerEvent: (event) => console.log(event),
   updateModel: (model) => console.log(model),
-  actionColumn: { enable: true, type: "destructive" },
+  actionColumn: { enable: true, type: "destructive", actions: postsRowActions },
   indexColumn: { enable: true, pin: PinDirection.left },
   styles: tableStyles,
 };

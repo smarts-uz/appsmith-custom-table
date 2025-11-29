@@ -1,5 +1,5 @@
 import { Button, type ButtonVariant } from "@/components/ui/button";
-import type { RowAction, TriggerEvent } from "../../types";
+import type { ActionColumn, TriggerEvent } from "../../types";
 import type { Row } from "@tanstack/react-table";
 import {
   DropdownMenu,
@@ -10,21 +10,22 @@ import {
 import * as LucideIcons from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import type { MouseEvent } from "react";
+import { cn } from "@/lib/utils";
+
 type ActionCellProps<TData> = {
   row: Row<TData>;
-  rowActions: RowAction[];
+  actionColumn: ActionColumn;
   triggerEvent: TriggerEvent;
   type?: ButtonVariant;
+  locale: string;
 };
-
-// Fallback icon
-const ICON_FALLBACK = LucideIcons.Info;
 
 export function ActionCell<TData>({
   row,
-  rowActions,
   type,
+  actionColumn,
   triggerEvent,
+  locale,
 }: ActionCellProps<TData>) {
   const handleAction = (
     eventName: string,
@@ -36,23 +37,26 @@ export function ActionCell<TData>({
     }
   };
 
-  const onlyOne = rowActions?.length === 1;
+  const onlyOne = actionColumn?.actions?.length === 1;
 
   const renderIcon = (iconName?: keyof typeof LucideIcons) => {
     const Icon =
       iconName && LucideIcons[iconName]
         ? (LucideIcons[iconName] as LucideIcon)
-        : ICON_FALLBACK;
+        : LucideIcons.Info;
     return <Icon className="w-5 h-5" />;
   };
 
   if (onlyOne) {
-    const action = rowActions[0];
+    const action = actionColumn?.actions[0];
     return (
       <Button
         variant={type || "default"}
         size="icon"
-        className="w-full min-w-8 h-full p-2 flex items-center gap-2"
+        className={cn(
+          "w-full min-w-8 h-full p-2 flex items-center gap-2",
+          action?.className
+        )}
         onClick={(e) => handleAction(action.onClick, e)}
       >
         {renderIcon(action.icon as keyof typeof LucideIcons)}
@@ -62,26 +66,37 @@ export function ActionCell<TData>({
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="min-w-8 mx-auto">
+      <DropdownMenuTrigger>
         <Button
           asChild
           size="icon"
           variant={type || "default"}
-          className="w-full h-full p-2"
+          className={cn(
+            "w-full h-full p-2 min-w-8 mx-auto",
+            actionColumn?.styles?.trigger
+          )}
         >
-          <LucideIcons.MoreHorizontal />
+          {renderIcon(
+            (actionColumn?.icon as keyof typeof LucideIcons) || "MoreHorizontal"
+          )}
         </Button>
       </DropdownMenuTrigger>
 
-      <DropdownMenuContent align="end" className="w-64">
-        {rowActions.map((action, i) => (
+      <DropdownMenuContent
+        align="end"
+        className={cn("w-64", actionColumn?.styles?.content)}
+      >
+        {actionColumn?.actions?.map((action, i) => (
           <DropdownMenuItem
             key={i}
-            className="flex items-center gap-2 text-base font-semibold"
+            className={cn(
+              "flex items-center gap-2 text-base font-semibold",
+              action?.className
+            )}
             onClick={(e) => handleAction(action.onClick, e)}
           >
             {renderIcon(action.icon as keyof typeof LucideIcons)}
-            {action.title}
+            {action.title[locale]}
           </DropdownMenuItem>
         ))}
       </DropdownMenuContent>

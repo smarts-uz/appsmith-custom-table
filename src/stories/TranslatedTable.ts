@@ -4,17 +4,29 @@ import { PinDirection } from "../constants";
 import { generateData, mockSchema } from "./helper";
 
 const postsRowActions: RowAction[] = [
-  { title: "Korish", onClick: "onClick", icon: "Activity" },
-  { title: "Qoshish", onClick: "onKomol", icon: "AlarmClockPlus" },
-  { title: "Tolov", onClick: "onClick" },
+  {
+    title: { uz: "Korish", ru: "Кориши" },
+    onClick: "onClick",
+    icon: "Activity",
+  },
+  {
+    title: { uz: "Qoshish", ru: "Кошиши" },
+    onClick: "onKomol",
+    icon: "AlarmClockPlus",
+  },
+  { title: { uz: "Tolov", ru: "Толов" }, onClick: "onClick" },
 ];
 
 export const TranslatedTableProps: TableModel = {
   tableData: generateData(20),
   schema: mockSchema,
   locale: "ru",
-  rowActions: postsRowActions,
-  actionColumn: { enable: true, pin: PinDirection.right, type: "outline" },
+  actionColumn: {
+    enable: true,
+    pin: PinDirection.right,
+    type: "outline",
+    actions: postsRowActions,
+  },
   indexColumn: { enable: true },
   onModelChange: (model) => console.log(model),
   triggerEvent: (event) => console.log(event),
