@@ -52,6 +52,11 @@ export function ActionCell<TData>({
     return <Icon className="w-5 h-5 text-inherit" />;
   };
 
+  // @ts-ignore
+  if (row.original?.__empty) {
+    return null;
+  }
+
   if (onlyOne) {
     const action = actionColumn?.actions[0];
     return (
