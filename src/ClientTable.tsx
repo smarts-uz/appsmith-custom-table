@@ -120,7 +120,7 @@ function ClientTable(props: TableModel) {
   React.useEffect(() => {
     if (data?.length > 0) {
       onModelChange((model: { data: Array<any> }) => {
-        if (model?.data?.length > 0 && model.data !== data) {
+        if (Array.isArray(model?.data) && model.data !== data) {
           setData(model.data || []);
         }
       });
